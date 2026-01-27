@@ -24,6 +24,18 @@
       cursor: pointer;
       transition: 0.3s;
     }
+    
+textarea {
+  width: 80%;
+  max-width: 500px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  resize: none;
+}
 
     button:hover {
       background-color: #ff1e38;
@@ -33,12 +45,32 @@
 </head>
 <body>
 
-<button onclick="sayHello()">Натисни ме</button>
+<textarea id="inputText" placeholder="Напиши текст тук..."></textarea>
+
+<button onclick="translateText()">Преведи</button>
+
+<textarea id="outputText" placeholder="Тук ще излезе резултатът..." readonly></textarea>
+
 
 <script>
-  function sayHello() {
-    alert("Добре дошъл! 🎉");
-  }
+function translateText() {
+  let text = document.getElementById("inputText").value;
+
+  let dictionary = {
+    "здравей": "hello",
+    "чао": "bye",
+    "котка": "cat",
+    "куче": "dog",
+    "обичам": "love",
+    "пуйка": "turkey 😄"
+  };
+
+  let words = text.toLowerCase().split(" ");
+  let translated = words.map(word => dictionary[word] || word);
+
+  document.getElementById("outputText").value = translated.join(" ");
+}
+
 </script>
 
 </body>
