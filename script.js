@@ -1,81 +1,59 @@
 const dictionary = {
-  "пари":"бурканец","план":"рецептак","среща":"вечерник","проблем":"мъглица",
-  "опасност":"тъмняк","полиция":"градинарец","човек":"оцелялник",
-  "приятел":"дружак","враг":"гадинец","град":"руинак","кола":"бръмчалка",
-  "оръжие":"гърмялник","вода":"мокрилка","храна":"манджак",
-  "път":"прашилка","нощ":"тъмнилка","ден":"жегалник",
-  "работа":"далаверак","информация":"слухец","тайна":"скривалица",
-  "място":"точка","сигнал":"знакалник","помощ":"подкрепник"
+    "проблем": ["стана една каша", "манджата загоря", "работата се оплете"],
+    "правила": ["реда на сергията", "как се играе играта", "вътрешния правилник"],
+    "държава": ["горните", "тия отгоре", "началството"],
+    "бавно": ["докато се наканят", "като костенурка на баир", "с три кафета пауза"],
+    "пари": ["жълтиците", "кинтите", "пачката"],
+    "работа": ["далаверата", "занимавката", "цялата схема"],
+    "полиция": ["сините", "онези със значките"],
+    "хора": ["народът", "хората от квартала", "сички наоколо"],
+    "лъжа": ["празни приказки", "вятър работа"],
+    "истина": ["както си е", "без украса"]
 };
 
-const reverseDictionary = {};
-for (let key in dictionary) {
-  reverseDictionary[dictionary[key]] = key;
+const fillers = [
+    "нали се сещаш",
+    "както винаги става",
+    "ей така между другото",
+    "да ти кажа честно",
+    "без да се обиждаш",
+    "както му е реда"
+];
+
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 
-let chatHistory = [];
+function encodeText() {
+    let text = document.getElementById("inputText").value;
 
-function preserveCase(original, transformed) {
-  if (original[0] === original[0].toUpperCase()) {
-    return transformed.charAt(0).toUpperCase() + transformed.slice(1);
-  }
-  return transformed;
-}
+    Object.keys(dictionary).forEach(word => {
+        let regex = new RegExp("\\b" + word + "\\b", "gi");
+        text = text.replace(regex, getRandom(dictionary[word]));
+    });
 
-function encodeWord(word){
-  let lower = word.toLowerCase();
-  if(dictionary[lower]){
-    return preserveCase(word, dictionary[lower]);
-  }
-  if(word.length > 6 && Math.random() < 0.4){
-    return preserveCase(word, lower + "ец");
-  }
-  return word;
-}
-
-function encodeText(){
-  let input = document.getElementById("plainText").value;
-  if(!input.trim()) return;
-
-  let encoded = input.replace(/[А-Яа-я]+/g, encodeWord);
-
-  chatHistory.push("🧠 Ти: " + input);
-  chatHistory.push("🔒 Кодирано: " + encoded);
-
-  document.getElementById("codedText").value = chatHistory.join("\n\n");
-  document.getElementById("plainText").value = "";
-}
-
-function decodeReply(){
-  let input = document.getElementById("replyInput").value;
-  if(!input.trim()) return;
-
-  let decoded = input.replace(/[А-Яа-я]+/g, word => {
-    let lower = word.toLowerCase();
-    if(reverseDictionary[lower]) return preserveCase(word, reverseDictionary[lower]);
-    if(lower.endsWith("ец")){
-      return word.slice(0,-2);
+    // добавяне на пълнежи
+    if (Math.random() > 0.5) {
+        text += ", " + getRandom(fillers);
     }
-    return word;
-  });
 
-  chatHistory.push("🤖 Отговор (код): " + input);
-  chatHistory.push("💬 Разкодирано: " + decoded);
+    // лека логическа странност (маркер)
+    if (Math.random() > 0.7) {
+        text = "уж сериозно, ама не съвсем – " + text;
+    }
 
-  document.getElementById("decodedText").value = chatHistory.join("\n\n");
-  document.getElementById("replyInput").value = "";
+    document.getElementById("encodedText").value = text;
 }
 
-function copyCoded(){
-  navigator.clipboard.writeText(document.getElementById("codedText").value);
-}
+function decodeText() {
+    let text = document.getElementById("encodedText").value;
 
-function copyDecoded(){
-  navigator.clipboard.writeText(document.getElementById("decodedText").value);
-}
+    Object.keys(dictionary).forEach(key => {
+        dictionary[key].forEach(phrase => {
+            let regex = new RegExp(phrase, "gi");
+            text = text.replace(regex, key);
+        });
+    });
 
-function clearChat(){
-  chatHistory = [];
-  document.getElementById("codedText").value = "";
-  document.getElementById("decodedText").value = "";
+    document.getElementById("inputText").value = text;
 }
