@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Wasteland Semantic Encoder</title>
+<title>Wasteland Semantic Chat</title>
 <style>
 body {
   margin: 0;
@@ -34,11 +34,11 @@ header {
   max-width: 75%;
   line-height: 1.4;
   font-size: 14px;
-  word-wrap: break-word;
 }
 .user { background: #1f6feb; align-self: flex-end; }
 .bot { background: #30363d; align-self: flex-start; }
-.system { background: #161b22; align-self: center; font-size: 12px; opacity: 0.85; }
+.system { background: #161b22; align-self: center; font-size: 12px; opacity: 0.9; }
+
 .input-bar {
   display: flex;
   padding: 10px;
@@ -87,78 +87,76 @@ let lastEncodedMessage = "";
 /* ===== РЕЧНИК СЪЩЕСТВИТЕЛНИ ===== */
 const nounMap = {
   "пари": "буркани",
-  "план": "рецепта",
   "среща": "вечеря",
   "проблем": "буря",
-  "полиция": "градинари",
+  "план": "рецепта",
   "работа": "мисия",
   "шеф": "капитан",
-  "документ": "карта",
-  "кола": "кон",
-  "телефон": "радио"
+  "полиция": "градинари"
 };
+const reverseNounMap = Object.fromEntries(Object.entries(nounMap).map(([k,v])=>[v,k]));
 
-/* ОБРАТЕН РЕЧНИК */
-const reverseNounMap = Object.fromEntries(
-  Object.entries(nounMap).map(([k,v]) => [v,k])
-);
-
-/* ===== ГЛАГОЛНИ СИНОНИМИ ===== */
+/* ===== ГЛАГОЛИ ===== */
 const verbMap = {
+  "имам": "нося",
+  "имаме": "носим",
   "отивам": "завъртам",
   "отиваме": "завъртаме",
-  "взимам": "прибирам",
-  "правя": "сглобявам",
-  "говоря": "мърморя",
-  "чакам": "дебна",
   "искам": "жадувам",
-  "трябва": "налага се",
-  "имам": "нося"
+  "чакам": "дебна",
+  "говоря": "мърморя"
 };
+const reverseVerbMap = Object.fromEntries(Object.entries(verbMap).map(([k,v])=>[v,k]));
 
-const reverseVerbMap = Object.fromEntries(
-  Object.entries(verbMap).map(([k,v]) => [v,k])
-);
+/* ===== УМНО ЗАМЕНЯНЕ НА ДУМИ ===== */
+function transformWord(word, map){
+  let clean = word.toLowerCase().replace(/[.,!?]/g,"");
+  let replaced = map[clean];
+  if(!replaced) return word;
 
+  // запазва главна буква
+  if(word[0] === word[0].toUpperCase()){
+    replaced = replaced.charAt(0).toUpperCase() + replaced.slice(1);
+  }
+
+  // връща пунктуацията
+  let punct = word.match(/[.,!?]+$/);
+  return replaced + (punct ? punct[0] : "");
+}
+
+/* ===== КОДИРАНЕ ===== */
 function encodeText(){
   let input = document.getElementById("plainText").value.trim();
   if(!input) return;
 
-  let words = input.split(/\b/);
-  let encodedWords = words.map(w => {
-    let lower = w.toLowerCase();
-    if(nounMap[lower]) return nounMap[lower];
-    if(verbMap[lower]) return verbMap[lower];
-    return w;
-  });
+  let words = input.split(" ");
+  let encoded = words.map(w => transformWord(transformWord(w, nounMap), verbMap)).join(" ");
 
-  let encoded = encodedWords.join("");
   lastEncodedMessage = encoded;
 
   addMessage("🧠 Ти: " + input, "user");
   addMessage("🔒 Кодирано: " + encoded, "system");
-  document.getElementById("plainText").value = "";
+
+  saveChat();
+  document.getElementById("plainText").value="";
 }
 
+/* ===== РАЗКОДИРАНЕ ===== */
 function decodeReply(){
   let input = document.getElementById("replyInput").value.trim();
   if(!input) return;
 
-  let words = input.split(/\b/);
-  let decodedWords = words.map(w => {
-    let lower = w.toLowerCase();
-    if(reverseNounMap[lower]) return reverseNounMap[lower];
-    if(reverseVerbMap[lower]) return reverseVerbMap[lower];
-    return w;
-  });
-
-  let decoded = decodedWords.join("");
+  let words = input.split(" ");
+  let decoded = words.map(w => transformWord(transformWord(w, reverseNounMap), reverseVerbMap)).join(" ");
 
   addMessage("🤖 Отговор (код): " + input, "bot");
   addMessage("💬 Разкодирано: " + decoded, "system");
-  document.getElementById("replyInput").value = "";
+
+  saveChat();
+  document.getElementById("replyInput").value="";
 }
 
+/* ===== ЧАТ UI ===== */
 function addMessage(text, type){
   const chat = document.getElementById("chatWindow");
   const div = document.createElement("div");
@@ -171,16 +169,25 @@ function addMessage(text, type){
 function copyLastEncoded(){
   if(!lastEncodedMessage) return alert("Няма кодирано съобщение!");
   navigator.clipboard.writeText(lastEncodedMessage);
-  alert("Кодът е копиран!");
 }
 
-/* ENTER = SEND */
+/* ===== ENTER ИЗПРАЩА ===== */
 document.getElementById("plainText").addEventListener("keydown", e=>{
   if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); encodeText(); }
 });
 document.getElementById("replyInput").addEventListener("keydown", e=>{
   if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); decodeReply(); }
 });
+
+/* ===== ПАЗЕНЕ НА ИСТОРИЯТА ===== */
+function saveChat(){
+  localStorage.setItem("wastelandChat", document.getElementById("chatWindow").innerHTML);
+}
+function loadChat(){
+  let saved = localStorage.getItem("wastelandChat");
+  if(saved) document.getElementById("chatWindow").innerHTML = saved;
+}
+loadChat();
 </script>
 
 </body>
