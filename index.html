@@ -1,34 +1,25 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Wasteland Semantic Chat</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <h1>☢️ Wasteland Semantic Chat</h1>
+    <h1 class="title">☢️ Wasteland Semantic Chat</h1>
 
-    <!-- ЧАТ ПРОЗОРЕЦ -->
-    <div id="chatBox" class="chat-container"></div>
+    <div id="chatBox" class="chat-box"></div>
 
-    <!-- ВХОДНА ЗОНА -->
-<div class="input-area">
-    <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
-    <button class="encode-btn" onclick="handleEncode()">Кодирай</button>
-    <button class="copy-btn" onclick="copyLastCode()">Копирай код</button>
-</div>
+    <div class="input-row">
+        <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
+        <button onclick="sendMessage()">Кодирай</button>
+        <button onclick="copyLastCode()">Копирай код</button>
+    </div>
 
-<div class="input-area">
-    <textarea id="encodedReply" placeholder="Постави кодирания отговор..."></textarea>
-    <button class="decode-btn" onclick="handleDecode()">Разкодирай</button>
-</div>
-
-
-    <!-- ПОЛЕ ЗА ДЕКОДИРАНЕ -->
-    <div class="input-area">
-        <textarea id="encodedReply" placeholder="Постави кодирания отговор..."></textarea>
-        <button onclick="handleDecode()">Разкодирай</button>
+    <div class="decode-row">
+        <textarea id="encodedReply" placeholder="Постави кодирано съобщение..."></textarea>
+        <button onclick="decodeMessage()">Разкодирай</button>
     </div>
 
     <script type="module" src="script.js"></script>
