@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8" />
-  <title>Wasteland Chat Encoder</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wasteland Encoder Chat</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>☢️ Wasteland Encoder</h1>
 
-  <div class="container">
-    <div class="box">
-      <h2>Нормален текст</h2>
-      <textarea id="plainText" placeholder="Пиши нормално тук..."></textarea>
-    </div>
+<div class="container">
 
-    <div class="box">
-      <h2>Кодиран текст</h2>
-      <textarea id="codedText" placeholder="Тук излиза кодираното..."></textarea>
-    </div>
-  </div>
-
-  <div class="buttons">
+  <div class="panel">
+    <h2>🧠 Ти пишеш нормално</h2>
+    <textarea id="plainText" placeholder="Напиши съобщение..."></textarea>
     <button onclick="encodeText()">Кодирай →</button>
-    <button onclick="decodeText()">← Разкодирай</button>
+    <button onclick="clearPlain()">Изчисти</button>
   </div>
 
-  <script src="script.js"></script>
+  <div class="panel">
+    <h2>📡 Кодиран текст</h2>
+    <textarea id="codedText" placeholder="Тук се появява кодираният текст..."></textarea>
+    <button onclick="copyCoded()">📋 Копирай</button>
+  </div>
+
+  <div class="panel">
+    <h2>📥 Пейстни отговор (кодиран)</h2>
+    <textarea id="replyInput" placeholder="Пейстни кодирания отговор тук..."></textarea>
+    <button onclick="decodeReply()">Разкодирай ↓</button>
+  </div>
+
+  <div class="panel">
+    <h2>💬 Разкодирано</h2>
+    <textarea id="decodedText" placeholder="Разкодираният текст ще се появи тук..."></textarea>
+    <button onclick="copyDecoded()">📋 Копирай</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
