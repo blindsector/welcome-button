@@ -71,12 +71,38 @@ let dictionary = {
 };
 
 
-  let words = text.toLowerCase().split(" ");
+let words = text.split(" ");
+
 let translated = words.map(word => {
-    if (dictionary[word]) {
-        return dictionary[word];
+// отделяме пунктуация в края (.,!?)
+let match = word.match(/^([А-Яа-яA-Za-z]+)([.,!?]*)$/);
+
+let cleanWord = word;
+let punctuation = "";
+
+if (match) {
+    cleanWord = match[1];
+    punctuation = match[2];
+}
+
+let lowerWord = cleanWord.toLowerCase();
+
+
+if (dictionary[lowerWord]) {
+    let translatedWord = dictionary[lowerWord];
+
+    // ако оригиналната дума е започвала с главна буква
+    if (word.length > 0 && word[0] === word[0].toUpperCase()) {
+        translatedWord = translatedWord.charAt(0).toUpperCase() + translatedWord.slice(1);
+    }
+
+ return translatedWord + punctuation;
+
+}
+
     } else {
-        return "операция " + word;
+return "Операция " + cleanWord + punctuation;
+
     }
 });
 
