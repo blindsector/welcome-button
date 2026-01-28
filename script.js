@@ -47,7 +47,10 @@ window.copyLastCode = function () {
     const coded = chatHistory.filter(m => m.type === "coded");
     if (!coded.length) return alert("Няма кодирано съобщение");
 
-    navigator.clipboard.writeText(coded[coded.length - 1].text.replace("🔐 Кодирано: ", ""));
+    navigator.clipboard.writeText(
+        coded[coded.length - 1].text.replace("🔐 Кодирано: ", "")
+    );
+
     alert("Кодът е копиран!");
 };
 
