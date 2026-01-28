@@ -1,75 +1,71 @@
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
-  margin: 20px 0 10px;
+    margin: 20px 0;
 }
 
-.chat-box {
-  width: 90%;
-  max-width: 900px;
-  height: 420px;
-  background: rgba(0,0,0,0.35);
-  border-radius: 12px;
-  padding: 15px;
-  overflow-y: auto;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  margin-bottom: 15px;
+.chat-container {
+    width: 80%;
+    max-width: 900px;
+    height: 400px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    margin-bottom: 15px;
 }
 
 .bubble {
-  padding: 10px 14px;
-  border-radius: 14px;
-  margin: 6px 0;
-  max-width: 75%;
-  word-wrap: break-word;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 70%;
+    white-space: pre-wrap;
 }
 
 .user {
-  background: #2979ff;
-  align-self: flex-end;
-  margin-left: auto;
+    background: #4caf50;
+    align-self: flex-end;
 }
 
-.code {
-  background: #263238;
-  align-self: flex-start;
-  margin-right: auto;
+.bot {
+    background: #2196f3;
+    align-self: flex-start;
 }
 
-.input-row {
-  width: 90%;
-  max-width: 900px;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+.input-area {
+    width: 80%;
+    max-width: 900px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
 }
 
 textarea {
-  flex: 1;
-  height: 70px;
-  border-radius: 8px;
-  border: none;
-  padding: 10px;
-  font-size: 14px;
-  resize: none;
+    flex: 1;
+    height: 60px;
+    border-radius: 8px;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
 }
 
 button {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #9c27b0;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
-
-#encodeBtn { background: #2e7d32; color: white; }
-#decodeBtn { background: #1565c0; color: white; }
-#copyBtn   { background: #6a1b9a; color: white; }
