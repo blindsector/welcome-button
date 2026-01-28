@@ -1,71 +1,20 @@
-import { nounMap, verbMap } from "./semanticExtras.js";
+import { nounMap, verbMap } from "./semanticExtras.js"
 
-// обръщаме речниците за разкодиране
-const reverseNounMap = Object.fromEntries(
-  Object.entries(nounMap).map(([k, v]) => [v, k])
-);
+const reverse = obj => Object.fromEntries(Object.entries(obj).map(([k,v]) => [v,k]))
 
-const reverseVerbMap = Object.fromEntries(
-  Object.entries(verbMap).map(([k, v]) => [v, k])
-);
+const reverseNouns = reverse(nounMap)
+const reverseVerbs = reverse(verbMap)
 
-// запазва главна буква
-function preserveCase(original, transformed) {
-  if (original[0] === original[0].toUpperCase()) {
-    return transformed.charAt(0).toUpperCase() + transformed.slice(1);
-  }
-  return transformed;
+function transform(word, map) {
+  const clean = word.toLowerCase().replace(/[.,!?]/g, "")
+  const punct = word.match(/[.,!?]$/)?.[0] || ""
+  return (map[clean] || word) + punct
 }
 
-// маха пунктуация за проверка
-function cleanWord(word) {
-  return word.toLowerCase().replace(/[.,!?]/g, "");
-}
-
-// връща пунктуацията
-function getPunctuation(word) {
-  const match = word.match(/[.,!?]+$/);
-  return match ? match[0] : "";
-}
-
-// =======================
-// 🔐 КОДИРАНЕ
-// =======================
 export function encodeText(text) {
-  return text
-    .split(" ")
-    .map(word => {
-      const clean = cleanWord(word);
-      const punct = getPunctuation(word);
-
-      let replaced =
-        nounMap[clean] ||
-        verbMap[clean] ||
-        clean;
-
-      replaced = preserveCase(word, replaced);
-      return replaced + punct;
-    })
-    .join(" ");
+  return text.split(" ").map(w => transform(transform(w, nounMap), verbMap)).join(" ")
 }
 
-// =======================
-// 🔓 РАЗКОДИРАНЕ
-// =======================
 export function decodeText(text) {
-  return text
-    .split(" ")
-    .map(word => {
-      const clean = cleanWord(word);
-      const punct = getPunctuation(word);
-
-      let replaced =
-        reverseNounMap[clean] ||
-        reverseVerbMap[clean] ||
-        clean;
-
-      replaced = preserveCase(word, replaced);
-      return replaced + punct;
-    })
-    .join(" ");
+  return text.split(" ").map(w => transform(transform(w, reverseNouns), reverseVerbs)).join(" ")
 }
