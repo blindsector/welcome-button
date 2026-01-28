@@ -27,7 +27,7 @@ function addMessage(text, type) {
   render()
 }
 
-document.getElementById("encodeBtn").onclick = () => {
+function doEncode() {
   const text = inputText.value.trim()
   if (!text) return
   const encoded = encodeText(text)
@@ -36,7 +36,7 @@ document.getElementById("encodeBtn").onclick = () => {
   inputText.value = ""
 }
 
-document.getElementById("decodeBtn").onclick = () => {
+function doDecode() {
   const text = replyInput.value.trim()
   if (!text) return
   const decoded = decodeText(text)
@@ -45,10 +45,27 @@ document.getElementById("decodeBtn").onclick = () => {
   replyInput.value = ""
 }
 
+document.getElementById("encodeBtn").onclick = doEncode
+document.getElementById("decodeBtn").onclick = doDecode
+
 document.getElementById("copyBtn").onclick = () => {
   const last = history.filter(m => m.type === "code").pop()
   if (!last) return
   navigator.clipboard.writeText(last.text.replace("🔒 Кодирано: ", ""))
 }
+
+inputText.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault()
+    doEncode()
+  }
+})
+
+replyInput.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault()
+    doDecode()
+  }
+})
 
 render()
