@@ -2,61 +2,59 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Таен Чат v3</title>
+<title>Таен Чат v3.5</title>
 <style>
-body {
+body{
   margin:0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  background: linear-gradient(135deg,#00b3ff,#0077ff);
   color:white;
 }
-.container {
+
+.container{
   display:flex;
   gap:20px;
   padding:20px;
 }
-.box {
+
+.box{
   flex:1;
-  background: rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.08);
   padding:15px;
   border-radius:15px;
+  backdrop-filter: blur(8px);
 }
-h2 { margin-top:0 }
-textarea {
+
+h2{margin-top:0}
+
+textarea, input{
   width:100%;
-  height:90px;
   border-radius:10px;
   border:none;
   padding:10px;
-  font-size:16px;
-  resize:none;
+  margin-top:10px;
+  font-size:15px;
 }
-  <input type="text" id="secretKey" placeholder="Таен ключ (по желание)">
 
-button {
+button{
   margin-top:10px;
   padding:12px;
-  width:100%;
   border:none;
   border-radius:10px;
-  background:#ff4757;
+  background:#ff4d4d;
   color:white;
   font-size:16px;
   cursor:pointer;
 }
-.chatlog {
+
+.chatHistory{
   background:white;
   color:black;
-  height:150px;
+  height:120px;
   overflow:auto;
-  border-radius:10px;
   padding:10px;
-  margin-bottom:10px;
-  font-family:monospace;
-}
-.small {
-  font-size:12px;
-  opacity:0.8;
+  border-radius:10px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -64,189 +62,117 @@ button {
 
 <div class="container">
 
-  <!-- ЛЯВО: ТИ -->
   <div class="box">
     <h2>🧠 Ти пишеш нормално</h2>
-    <div id="chatNormal" class="chatlog"></div>
-    <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
-    <button onclick="sendMessage()">Изпрати ➜</button>
+    <div id="chatBox" class="chatHistory"></div>
+    <textarea id="normalInput" placeholder="Напиши съобщение..."></textarea>
+    <input type="text" id="secretKey" placeholder="Таен ключ (по желание)">
+    <button onclick="encodeMessage()">Изпрати ➜</button>
   </div>
 
-  <!-- ДЯСНО: КОД -->
   <div class="box">
-    <h2>🔐 Кодиран текст</h2>
-    <div id="chatEncoded" class="chatlog"></div>
+    <h2>🔐 Кодирано</h2>
+    <div id="encodedBox" class="chatHistory"></div>
 
     <h2>📥 Пейстни отговор (кодиран)</h2>
-    <textarea id="replyInput" placeholder="Пейстни кодирания отговор..."></textarea>
-    <button onclick="decodeReply()">Разкодирай ⬇</button>
+    <textarea id="replyInput" placeholder="Пейстни кодирания текст..."></textarea>
+    <button onclick="decodeMessage()">Разкодирай ⬇</button>
 
     <h2>💬 Разкодирано</h2>
-    <div id="chatDecoded" class="chatlog"></div>
+    <div id="decodedBox" class="chatHistory"></div>
   </div>
 
 </div>
 
 <script>
+/* ================== РЕЧНИК ================== */
 let baseDictionary = {
-  "здравей":"глувек",
-  "здрасти":"глевук",
-  "как":"тре",
-  "си":"мулча",
-  "добре":"шляпко",
-  "приятел":"дружко",
-  "брат":"батон",
-  "човек":"змур",
-  "хора":"мравки",
-  "жена":"кака",
-  "мъж":"батка",
-  "момиче":"плювка",
-  "момче":"жмур",
-  "да":"трола",
-  "не":"брум",
-  "може":"врът",
-  "трябва":"джаста",
-  "искам":"мъгла",
-  "отивам":"зуртя",
-  "идвам":"вжж",
-  "виж":"крам",
-  "видим":"крамуля",
-  "гледай":"зир",
-  "чакай":"мрън",
-  "бързо":"джиг",
-  "бавно":"шляп",
-  "пробваме":"зортек",
-  "план":"мряк",
-  "идея":"шушляк",
-  "работа":"чомба",
-  "задача":"трясък",
-  "тайно":"шуш",
-  "скрито":"мълч",
-  "говорим":"бръм",
-  "писах":"драс",
-  "казах":"жгът",
-  "пари":"риби",
-  "документ":"хартий",
-  "среща":"сбирка",
-  "място":"дупка",
-  "тук":"тука",
-  "там":"тамка",
-  "горе":"връц",
-  "долу":"глъб",
-  "вход":"дуп",
-  "изход":"бег",
-  "проблем":"тулба",
-  "опасно":"жул",
-  "спокойно":"мека",
-  "сигурно":"бетон",
-  "несигурно":"хлъз",
-  "утре":"вряк",
-  "днес":"днеска",
-  "вчера":"мину",
-  "после":"сетне",
-  "веднага":"джаста",
-  "готово":"чук",
-  "край":"финч",
-  "начало":"стар",
-  "книга":"листак",
-  "тефтер":"драск",
-  "ключ":"зъб",
-  "врата":"дупка",
-  "мазе":"глъбина",
-  "район":"облак",
-  "улица":"пътек",
-  "кола":"бръмка",
-  "телефон":"жужка",
-  "съобщение":"мрявка",
-  "чат":"бърбор",
-  "код":"шум",
-  "тайна":"шуш",
-  "истина":"бетон",
-  "лъжа":"пушек"
+"здравей":"глувек","здрасти":"глевук","как":"тре","си":"мулча",
+"добре":"шляпко","приятел":"дружко","брат":"батон","човек":"змур",
+"хора":"мравки","жена":"кака","мъж":"батка","момиче":"плювка",
+"момче":"жмур","да":"трола","не":"брум","може":"врът",
+"трябва":"джаста","искам":"мъгла","отивам":"зуртя","идвам":"вжж",
+"виж":"крам","видим":"крамуля","гледай":"зир","чакай":"мрън",
+"бързо":"джиг","бавно":"шляп","пробваме":"зортек","план":"мряк",
+"идея":"шушляк","работа":"чомба","задача":"трясък","тайно":"шуш",
+"скрито":"мълч","говорим":"бръм","писах":"драс","казах":"жгът",
+"пари":"риби","документ":"хартий","среща":"сбирка","място":"дупка",
+"тук":"тука","там":"тамка","горе":"връц","долу":"глъб",
+"вход":"дуп","изход":"бег","проблем":"тулба","опасно":"жул",
+"спокойно":"мека","сигурно":"бетон","несигурно":"хлъз",
+"утре":"вряк","днес":"днеска","вчера":"мину","после":"сетне",
+"веднага":"джаста","готово":"чук","край":"финч","начало":"стар",
+"книга":"листак","тефтер":"драск","ключ":"зъб","врата":"дупка",
+"мазе":"глъбина","район":"облак","улица":"пътек","кола":"бръмка",
+"телефон":"жужка","съобщение":"мрявка","чат":"бърбор","код":"шум",
+"тайна":"шуш","истина":"бетон","лъжа":"пушек"
 };
 
-
-let noiseWords = [
-  "шляп","мряк","зорт","бумка","тряс","пляс",
-  "вжж","пльок","дрън","фссс","жжж","трък",
-  "блям","шуп","вряс","грух","тъц","прас",
-  "скръц","шур","брум","цък","фръц"
-];
+/* ========= ШУМ + СТАБИЛНИ ДУМИ ========= */
+let noiseWords = ["шляп","мряк","зорт","бумка","тряс","пляс","вжж","дрън","жжж","трък","блям","шуп","вряс","грух","тъц","прас"];
 let stableWords = ["трола","брум","джаста","шуш","бетон","мека","чук","финч"];
 
-
+/* ========= РАЗБЪРКВАНЕ ========= */
 function shuffleWord(word){
   if(stableWords.includes(word)) return word;
   if(word.length < 4) return word;
-
   let arr = word.split('');
-  for(let i = arr.length - 2; i > 1; i--){
-    let j = Math.floor(Math.random() * (i - 1)) + 1;
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+  for(let i = arr.length-2; i>1; i--){
+    let j = Math.floor(Math.random()*(i-1))+1;
+    [arr[i],arr[j]]=[arr[j],arr[i]];
   }
   return arr.join('');
 }
 
-
-
-function addNoise(){
-  return Math.random() < 0.3 ? noiseWords[Math.floor(Math.random()*noiseWords.length)] + " " : "";
+/* ========= ТАЕН КЛЮЧ ========= */
+function applySecretKey(key){
+  if(!key) return;
+  let seed=0;
+  for(let c of key) seed+=c.charCodeAt(0);
+  let keys=Object.keys(baseDictionary);
+  keys.forEach((k,i)=>{
+    if((i+seed)%3===0) baseDictionary[k]=shuffleWord(baseDictionary[k]);
+    if((i+seed)%5===0) baseDictionary[k]+=noiseWords[seed%noiseWords.length];
+  });
 }
 
-function mutateDictionary(){
-  for(let key in baseDictionary){
-    if(Math.random() < 0.35){
-      baseDictionary[key] = shuffleWord(baseDictionary[key]);
-    }
-  }
-}
+/* ========= КОДИРАНЕ ========= */
+function encodeMessage(){
+  let text=document.getElementById("normalInput").value.toLowerCase();
+  let key=document.getElementById("secretKey").value;
+  applySecretKey(key);
 
-
-function encode(text){
-  mutateDictionary(); // 🧬 жив речник
-  return text.split(" ").map(word=>{
-    let clean = word.toLowerCase();
-    if(baseDictionary[clean]){
-      return addNoise() + shuffleWord(baseDictionary[clean]);
-    }
-    return shuffleWord(word);
+  let words=text.split(" ");
+  let encoded=words.map(w=>{
+    let clean=w.replace(/[.,!?]/g,"");
+    let mapped=baseDictionary[clean]||clean;
+    if(Math.random()<0.25) mapped+=noiseWords[Math.floor(Math.random()*noiseWords.length)];
+    return shuffleWord(mapped);
   }).join(" ");
+
+  document.getElementById("encodedBox").innerHTML+=encoded+"<br>";
+  document.getElementById("chatBox").innerHTML+="<b>Ти:</b> "+text+"<br>";
+  saveHistory();
 }
 
-function decode(text){
-  let reverse = {};
-  for(let key in baseDictionary){
-    reverse[baseDictionary[key]] = key;
-  }
-
-  return text.split(" ").map(word=>{
-    let clean = word.toLowerCase();
-    clean = clean.replace(/[^а-я]/gi,"");
-    if(reverse[clean]) return reverse[clean];
-    return word;
-  }).join(" ");
+/* ========= РАЗКОДИРАНЕ ========= */
+function decodeMessage(){
+  let text=document.getElementById("replyInput").value.toLowerCase();
+  let reversed=Object.fromEntries(Object.entries(baseDictionary).map(([k,v])=>[v,k]));
+  let words=text.split(" ");
+  let decoded=words.map(w=>reversed[w]||w).join(" ");
+  document.getElementById("decodedBox").innerHTML+=decoded+"<br>";
 }
 
-function sendMessage(){
-  let input = document.getElementById("inputText");
-  let normal = input.value;
-  if(!normal.trim()) return;
-
-  let encoded = encode(normal);
-
-  document.getElementById("chatNormal").innerHTML += "🙂 " + normal + "<br>";
-  document.getElementById("chatEncoded").innerHTML += "🔐 " + encoded + "<br>";
-
-  input.value="";
+/* ========= ИСТОРИЯ ========= */
+function saveHistory(){
+  localStorage.setItem("chatHistory",document.getElementById("chatBox").innerHTML);
 }
-
-function decodeReply(){
-  let coded = document.getElementById("replyInput").value;
-  let decoded = decode(coded);
-
-  document.getElementById("chatDecoded").innerHTML += "🤖 " + decoded + "<br>";
-  document.getElementById("replyInput").value="";
+function loadHistory(){
+  let h=localStorage.getItem("chatHistory");
+  if(h) document.getElementById("chatBox").innerHTML=h;
 }
+window.onload=loadHistory;
 </script>
 
 </body>
