@@ -1,4 +1,8 @@
 function encodeText() {
+    alert("Работи!");
+}
+
+function encodeText() {
 
     let text = document.getElementById("inputText").value;
 
