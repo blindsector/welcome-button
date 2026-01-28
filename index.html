@@ -1,168 +1,30 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8">
-<title>Уличен Камуфлаж Чат</title>
-<style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#141e30,#243b55);
-  color:white;
-}
-.container{display:flex;gap:20px;padding:20px}
-.box{
-  flex:1;
-  background:rgba(255,255,255,0.07);
-  padding:15px;
-  border-radius:15px;
-}
-textarea,input{
-  width:100%;margin-top:10px;padding:10px;
-  border-radius:10px;border:none;font-size:15px;
-}
-button{
-  margin-top:10px;padding:12px;border:none;
-  border-radius:10px;background:#ff5e57;color:white;
-  font-size:16px;cursor:pointer;
-}
-.chat{
-  background:white;color:black;height:140px;
-  overflow:auto;border-radius:10px;padding:10px;margin-top:10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>Wasteland Chat Encoder</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <h1>☢️ Wasteland Encoder</h1>
 
-<div class="container">
-  <div class="box">
-    <h2>🧠 Нормален текст</h2>
-    <div id="chatNormal" class="chat"></div>
-    <textarea id="inputText" placeholder="Пиши нормално..."></textarea>
-    <input type="text" id="secretKey" placeholder="Таен ключ (по желание)">
-    <button onclick="encodeText()">Кодирай ➜</button>
+  <div class="container">
+    <div class="box">
+      <h2>Нормален текст</h2>
+      <textarea id="plainText" placeholder="Пиши нормално тук..."></textarea>
+    </div>
+
+    <div class="box">
+      <h2>Кодиран текст</h2>
+      <textarea id="codedText" placeholder="Тук излиза кодираното..."></textarea>
+    </div>
   </div>
 
-  <div class="box">
-    <h2>🕶 Кодирано съобщение</h2>
-    <div id="chatEncoded" class="chat"></div>
-
-    <h2>📥 Постави кодирания отговор</h2>
-    <textarea id="replyText"></textarea>
-    <button onclick="decodeText()">Разкодирай ⬇</button>
-
-    <h2>💬 Разкодирано</h2>
-    <div id="chatDecoded" class="chat"></div>
+  <div class="buttons">
+    <button onclick="encodeText()">Кодирай →</button>
+    <button onclick="decodeText()">← Разкодирай</button>
   </div>
-</div>
 
-<script>
-/* ========= ГОЛЯМ РЕЧНИК ========= */
-/* Всяка дума има МАСИВ от заместители */
-
-let dictionary = {
-"да":["пляс","става","окей","ясно","айде"],
-"не":["йок","няма","пас","греда"],
-"пари":["баници","кинти","салфетки","тухли","хартийки"],
-"полиция":["гости","сините","комшиите","публиката"],
-"опасно":["тънко","люто","жега","хлъзгаво"],
-"среща":["кафе","раздумка","сеанс","разходка"],
-"място":["полянка","точка","сцената","адресче"],
-"тук":["тука","насам","у нас"],
-"там":["тамка","натам","у тях"],
-"отивам":["мятам се","заминавам","отлепям се"],
-"идвам":["дотътрям се","доклатя се","появявам се"],
-"чакай":["задръж","я почакай","спри малко"],
-"бързо":["на бърза","експрес","на пожар"],
-"бавнo":["полека","айляшко"],
-"приятел":["мой човек","брат","комшия","човек"],
-"жена":["мацка","госпожата","тая"],
-"мъж":["пича","оня","батката"],
-"кола":["бръмчалото","кошницата","каруцата"],
-"телефон":["жужката","слушалката","звънарката"],
-"говорим":["лафим","бъбрим","разправяме"],
-"проблем":["драма","филм","ситуация"],
-"добре":["бетон","шест","топ"],
-"лошо":["зле","криво","тежко"],
-"тайна":["майна","тишина","сянка"],
-"днес":["днеска","днесчица"],
-"утре":["утрека","утре вечер"],
-"вчера":["вчерака","онзи ден"],
-"работа":["далавера","задачка","играта"],
-"план":["схема","филм","номер"],
-"искам":["желая","мерак ми е","на мерак съм"],
-"трябва":["налага се","редно е","ще трябва"],
-"вземи":["грабни","лапни","прибери"],
-"донеси":["дотътри","влачи","домъкни"],
-"остави":["зарежи","метни","хвърли"],
-"тръгвам":["отлепям","изчезвам","палвам"],
-"готово":["оправено","шест","уредено"],
-"край":["финал","айде стига","до там"],
-"виж":["зирни","хвърли око","погледни"],
-"гледай":["наблюдавай","зиркай"],
-"вход":["врата","дупка","проход"],
-"изход":["бегачката","изхода","бягството"]
-};
-
-/* ========= ТАЕН КЛЮЧ ========= */
-function applyKey(key){
-  if(!key) return;
-  let seed=0;
-  for(let c of key) seed+=c.charCodeAt(0);
-  Math.seed = seed;
-}
-
-/* ========= ИЗБОР НА СЛУЧАЙНА ДУМА ========= */
-function randomChoice(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-
-/* ========= КОДИРАНЕ ========= */
-function encodeText(){
-  let text=document.getElementById("inputText").value.toLowerCase();
-  let key=document.getElementById("secretKey").value;
-  applyKey(key);
-
-  let words=text.split(" ");
-  let encoded=words.map(w=>{
-    let clean=w.replace(/[.,!?]/g,"");
-    if(dictionary[clean] && Math.random()<0.6){
-      return randomChoice(dictionary[clean]);
-    }
-    return w;
-  }).join(" ");
-
-  document.getElementById("chatNormal").innerHTML+="<b>Ти:</b> "+text+"<br>";
-  document.getElementById("chatEncoded").innerHTML+="🕶 "+encoded+"<br>";
-  saveHistory();
-}
-
-/* ========= РАЗКОДИРАНЕ ========= */
-function decodeText(){
-  let text=document.getElementById("replyText").value.toLowerCase();
-  let reverse={};
-  for(let key in dictionary){
-    dictionary[key].forEach(v=>reverse[v]=key);
-  }
-
-  let words=text.split(" ");
-  let decoded=words.map(w=>reverse[w]||w).join(" ");
-  document.getElementById("chatDecoded").innerHTML+="🤖 "+decoded+"<br>";
-}
-
-/* ========= ИСТОРИЯ ========= */
-function saveHistory(){
-  localStorage.setItem("normalHistory",document.getElementById("chatNormal").innerHTML);
-  localStorage.setItem("encodedHistory",document.getElementById("chatEncoded").innerHTML);
-}
-function loadHistory(){
-  if(localStorage.getItem("normalHistory"))
-    document.getElementById("chatNormal").innerHTML=localStorage.getItem("normalHistory");
-  if(localStorage.getItem("encodedHistory"))
-    document.getElementById("chatEncoded").innerHTML=localStorage.getItem("encodedHistory");
-}
-window.onload=loadHistory;
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
