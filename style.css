@@ -1,95 +1,96 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #0f2027, #203a43, #1c313a);
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Заглавие */
 h1 {
-    margin: 20px 0 10px;
-    font-size: 28px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 8px rgba(0,255,150,0.4);
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
-/* ЧАТ ПРОЗОРЕЦ */
+/* Чат прозорец */
 .chat-container {
-    width: 85%;
-    max-width: 950px;
-    height: 420px;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 20px;
-    padding: 20px;
+    width: 80%;
+    max-width: 900px;
+    height: 400px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 15px;
+    padding: 15px;
     overflow-y: auto;
     box-shadow: 0 0 25px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
     gap: 10px;
-    backdrop-filter: blur(6px);
-    margin-bottom: 15px;
 }
 
-/* БАЛОНЧЕТА */
+/* Балончета */
 .bubble {
-    padding: 12px 16px;
-    border-radius: 14px;
-    max-width: 70%;
-    white-space: pre-wrap;
-    line-height: 1.4;
-    font-size: 15px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    max-width: 60%;
+    word-wrap: break-word;
+    font-size: 14px;
 }
 
 .user {
     align-self: flex-end;
-    background: linear-gradient(135deg, #2979ff, #00c6ff);
-    box-shadow: 0 0 10px rgba(0,150,255,0.4);
+    background: linear-gradient(45deg, #2196f3, #00bcd4);
 }
 
-.bot {
+.coded {
     align-self: flex-start;
-    background: linear-gradient(135deg, #ff9800, #ff5722);
-    box-shadow: 0 0 10px rgba(255,120,0,0.4);
+    background: linear-gradient(45deg, #ff9800, #ff5722);
 }
 
-/* ВХОДНА ЗОНА */
+/* Входна зона */
 .input-area {
-    width: 85%;
-    max-width: 950px;
+    width: 80%;
+    max-width: 900px;
+    margin-top: 15px;
     display: flex;
-    gap: 12px;
-    margin-bottom: 35px;
+    gap: 10px;
 }
 
 textarea {
     flex: 1;
-    height: 70px;
-    border-radius: 12px;
+    border-radius: 10px;
     border: none;
-    padding: 12px;
-    font-size: 15px;
+    padding: 10px;
+    font-size: 14px;
     resize: none;
-    outline: none;
-    background: rgba(255,255,255,0.9);
-    color: #222;
+    height: 60px;
 }
 
-/* БУТОН */
+/* Бутони */
 button {
-    padding: 12px 22px;
-    border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #9c27b0, #673ab7);
-    color: white;
+    border-radius: 10px;
+    padding: 10px 15px;
     font-weight: bold;
-    font-size: 14px;
     cursor: pointer;
-    transition: 0.2s ease;
+    color: white;
+    transition: transform 0.1s, opacity 0.1s;
 }
 
 button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(156,39,176,0.6);
+    opacity: 0.9;
+}
+
+.encode-btn {
+    background: linear-gradient(45deg, #4caf50, #2e7d32);
+}
+
+.copy-btn {
+    background: linear-gradient(45deg, #9c27b0, #6a1b9a);
+}
+
+.decode-btn {
+    background: linear-gradient(45deg, #1976d2, #0d47a1);
 }
