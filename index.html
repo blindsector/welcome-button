@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Wasteland Chat Encoder</title>
+<title>Wasteland Semantic Encoder</title>
 <style>
 body {
   margin: 0;
@@ -13,16 +13,13 @@ body {
   flex-direction: column;
   height: 100vh;
 }
-
 header {
   padding: 15px;
   text-align: center;
   font-size: 20px;
   font-weight: bold;
   background: rgba(0,0,0,0.3);
-  letter-spacing: 1px;
 }
-
 .chat-window {
   flex: 1;
   padding: 15px;
@@ -31,7 +28,6 @@ header {
   flex-direction: column;
   gap: 10px;
 }
-
 .msg {
   padding: 10px 14px;
   border-radius: 14px;
@@ -40,18 +36,15 @@ header {
   font-size: 14px;
   word-wrap: break-word;
 }
-
 .user { background: #1f6feb; align-self: flex-end; }
 .bot { background: #30363d; align-self: flex-start; }
 .system { background: #161b22; align-self: center; font-size: 12px; opacity: 0.85; }
-
 .input-bar {
   display: flex;
   padding: 10px;
   gap: 10px;
   background: rgba(0,0,0,0.35);
 }
-
 textarea {
   flex: 1;
   resize: none;
@@ -60,7 +53,6 @@ textarea {
   padding: 10px;
   font-size: 14px;
 }
-
 button {
   background: #238636;
   border: none;
@@ -70,22 +62,12 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
-
-button:hover { background: #2ea043; }
-
-.copy-btn {
-  background: #8957e5;
-}
-
-.copy-btn:hover {
-  background: #a371f7;
-}
+.copy-btn { background: #8957e5; }
 </style>
 </head>
 <body>
 
-<header>☢️ Wasteland Chat Encoder</header>
-
+<header>☢️ Wasteland Semantic Chat</header>
 <div id="chatWindow" class="chat-window"></div>
 
 <div class="input-bar">
@@ -102,21 +84,79 @@ button:hover { background: #2ea043; }
 <script>
 let lastEncodedMessage = "";
 
-// Прост алгоритмичен "код"
-function encodeWord(word){
-  return word
-    .replace(/а/gi,"4")
-    .replace(/о/gi,"0")
-    .replace(/е/gi,"3")
-    .replace(/и/gi,"1");
+/* ===== РЕЧНИК СЪЩЕСТВИТЕЛНИ ===== */
+const nounMap = {
+  "пари": "буркани",
+  "план": "рецепта",
+  "среща": "вечеря",
+  "проблем": "буря",
+  "полиция": "градинари",
+  "работа": "мисия",
+  "шеф": "капитан",
+  "документ": "карта",
+  "кола": "кон",
+  "телефон": "радио"
+};
+
+/* ОБРАТЕН РЕЧНИК */
+const reverseNounMap = Object.fromEntries(
+  Object.entries(nounMap).map(([k,v]) => [v,k])
+);
+
+/* ===== ГЛАГОЛНИ СИНОНИМИ ===== */
+const verbMap = {
+  "отивам": "завъртам",
+  "отиваме": "завъртаме",
+  "взимам": "прибирам",
+  "правя": "сглобявам",
+  "говоря": "мърморя",
+  "чакам": "дебна",
+  "искам": "жадувам",
+  "трябва": "налага се",
+  "имам": "нося"
+};
+
+const reverseVerbMap = Object.fromEntries(
+  Object.entries(verbMap).map(([k,v]) => [v,k])
+);
+
+function encodeText(){
+  let input = document.getElementById("plainText").value.trim();
+  if(!input) return;
+
+  let words = input.split(/\b/);
+  let encodedWords = words.map(w => {
+    let lower = w.toLowerCase();
+    if(nounMap[lower]) return nounMap[lower];
+    if(verbMap[lower]) return verbMap[lower];
+    return w;
+  });
+
+  let encoded = encodedWords.join("");
+  lastEncodedMessage = encoded;
+
+  addMessage("🧠 Ти: " + input, "user");
+  addMessage("🔒 Кодирано: " + encoded, "system");
+  document.getElementById("plainText").value = "";
 }
 
-function decodeWord(word){
-  return word
-    .replace(/4/g,"а")
-    .replace(/0/g,"о")
-    .replace(/3/g,"е")
-    .replace(/1/g,"и");
+function decodeReply(){
+  let input = document.getElementById("replyInput").value.trim();
+  if(!input) return;
+
+  let words = input.split(/\b/);
+  let decodedWords = words.map(w => {
+    let lower = w.toLowerCase();
+    if(reverseNounMap[lower]) return reverseNounMap[lower];
+    if(reverseVerbMap[lower]) return reverseVerbMap[lower];
+    return w;
+  });
+
+  let decoded = decodedWords.join("");
+
+  addMessage("🤖 Отговор (код): " + input, "bot");
+  addMessage("💬 Разкодирано: " + decoded, "system");
+  document.getElementById("replyInput").value = "";
 }
 
 function addMessage(text, type){
@@ -128,50 +168,18 @@ function addMessage(text, type){
   chat.scrollTop = chat.scrollHeight;
 }
 
-function encodeText(){
-  let input = document.getElementById("plainText").value.trim();
-  if(!input) return;
-
-  let encoded = input.replace(/[А-Яа-яA-Za-z]+/g, encodeWord);
-  lastEncodedMessage = encoded;
-
-  addMessage("🧠 Ти: " + input, "user");
-  addMessage("🔒 Кодирано: " + encoded, "system");
-
-  document.getElementById("plainText").value = "";
-}
-
-function decodeReply(){
-  let input = document.getElementById("replyInput").value.trim();
-  if(!input) return;
-
-  let decoded = input.replace(/[A-Za-z0-9]+/g, decodeWord);
-
-  addMessage("🤖 Отговор (код): " + input, "bot");
-  addMessage("💬 Разкодирано: " + decoded, "system");
-
-  document.getElementById("replyInput").value = "";
-}
-
 function copyLastEncoded(){
   if(!lastEncodedMessage) return alert("Няма кодирано съобщение!");
   navigator.clipboard.writeText(lastEncodedMessage);
   alert("Кодът е копиран!");
 }
 
-// Enter = изпращане
-document.getElementById("plainText").addEventListener("keydown", function(e){
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    encodeText();
-  }
+/* ENTER = SEND */
+document.getElementById("plainText").addEventListener("keydown", e=>{
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); encodeText(); }
 });
-
-document.getElementById("replyInput").addEventListener("keydown", function(e){
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    decodeReply();
-  }
+document.getElementById("replyInput").addEventListener("keydown", e=>{
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); decodeReply(); }
 });
 </script>
 
