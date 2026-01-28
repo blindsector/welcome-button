@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Wasteland Semantic Chat</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <h1>☢️ Wasteland Semantic Chat</h1>
 
-    <div class="chat-container" id="chatBox"></div>
+    <!-- ЧАТ ПРОЗОРЕЦ -->
+    <div id="chatBox" class="chat-container"></div>
 
+    <!-- ВХОДНА ЗОНА -->
     <div class="input-area">
         <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
-        <button id="sendBtn">Кодирай</button>
+        <button onclick="handleEncode()">Кодирай</button>
+    </div>
+
+    <!-- ПОЛЕ ЗА ДЕКОДИРАНЕ -->
+    <div class="input-area">
+        <textarea id="encodedReply" placeholder="Постави кодирания отговор..."></textarea>
+        <button onclick="handleDecode()">Разкодирай</button>
     </div>
 
     <script type="module" src="script.js"></script>
