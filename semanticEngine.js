@@ -1,15 +1,15 @@
+// Проста "семантична" кодировка за демо
+
 export function encodeText(text) {
     return text
-        .replace(/пари/gi, "капачки")
-        .replace(/оръжие/gi, "гърмялка")
-        .replace(/среща/gi, "засечка")
-        .replace(/полиция/gi, "сиви шапки");
+        .split("")
+        .map(c => String.fromCharCode(c.charCodeAt(0) + 3))
+        .join("");
 }
 
 export function decodeText(text) {
     return text
-        .replace(/капачки/gi, "пари")
-        .replace(/гърмялка/gi, "оръжие")
-        .replace(/засечка/gi, "среща")
-        .replace(/сиви шапки/gi, "полиция");
+        .split("")
+        .map(c => String.fromCharCode(c.charCodeAt(0) - 3))
+        .join("");
 }
