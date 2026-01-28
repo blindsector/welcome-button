@@ -1,29 +1,26 @@
-const dictionary = {
-  "пари": "бурканец",
-  "план": "рецептак",
-  "среща": "вечерник",
-  "полиция": "градинарец",
-  "проблем": "мъглец",
-  "опасност": "тъмнилка",
-  "храна": "папаница",
-  "вода": "мокрилка",
-  "оръжие": "гърмялка",
-  "кола": "бръмчалка",
-  "гориво": "миризлилка",
-  "тайна": "шептилка",
-  "информация": "слухалка",
-  "човек": "оцелялец",
-  "приятел": "дружак",
-  "враг": "грабак",
-  "град": "руиноград",
-  "път": "прашник",
-  "нощ": "тъмник",
-  "ден": "прашенец",
-  "помощ": "подсилек"
+const baseDictionary = {
+  "пари":"буркан","план":"рецепта","среща":"вечеря","полиция":"градинар",
+  "проблем":"мъгла","опасност":"тъмница","информация":"слух",
+  "човек":"оцеляло","приятел":"дружка","враг":"гадина",
+  "град":"руина","кола":"бръмчалка","оръжие":"гърмяло",
+  "вода":"мокро","храна":"манджа","път":"прашилка",
+  "нощ":"тъмно","ден":"жега","помощ":"подкрепа",
+  "работа":"далавера","говоря":"приказвам","отивам":"мятам се",
+  "идвам":"доклатя се","чакам":"вися","взимам":"гепя",
+  "давам":"бутам","правя":"майсторя","мисля":"умувам"
 };
 
+const suffixes = ["ец","ак","ник","лка","ица","уша","онка"];
 const reverseDictionary = {};
-for (let key in dictionary) reverseDictionary[dictionary[key]] = key;
+
+function buildDictionaries(){
+  for(let key in baseDictionary){
+    let coded = baseDictionary[key] + suffixes[Math.floor(Math.random()*suffixes.length)];
+    reverseDictionary[coded] = key;
+    baseDictionary[key] = coded;
+  }
+}
+buildDictionaries();
 
 function preserveCase(original, transformed) {
   if (original[0] === original[0].toUpperCase()) {
@@ -32,27 +29,25 @@ function preserveCase(original, transformed) {
   return transformed;
 }
 
-function randomSuffix(word) {
-  const suffixes = ["ец","ак","ник","лка","ица","илка"];
-  return word + suffixes[Math.floor(Math.random()*suffixes.length)];
-}
-
 function encodeText() {
   let text = document.getElementById("plainText").value;
 
   let encoded = text.replace(/[А-Яа-я]+/g, word => {
     let lower = word.toLowerCase();
 
-    if (dictionary[lower]) return preserveCase(word, dictionary[lower]);
+    if (baseDictionary[lower]) {
+      return preserveCase(word, baseDictionary[lower]);
+    }
 
-    if (word.length > 6 && Math.random() < 0.4)
-      return preserveCase(word, randomSuffix(lower));
+    // 60% шанс да маскира дълга дума
+    if (word.length > 5 && Math.random() < 0.6) {
+      return preserveCase(word, lower + suffixes[Math.floor(Math.random()*suffixes.length)]);
+    }
 
     return word;
   });
 
   document.getElementById("codedText").value = encoded;
-  localStorage.setItem("codedText", encoded);
 }
 
 function decodeReply() {
@@ -78,8 +73,3 @@ function copyDecoded() {
 function clearPlain() {
   document.getElementById("plainText").value = "";
 }
-
-window.onload = () => {
-  const saved = localStorage.getItem("codedText");
-  if (saved) document.getElementById("codedText").value = saved;
-};
