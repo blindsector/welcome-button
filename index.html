@@ -1,42 +1,179 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Wasteland Encoder Chat</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Wasteland Chat Encoder</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.3);
+  letter-spacing: 1px;
+}
+
+.chat-window {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg {
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 75%;
+  line-height: 1.4;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.user { background: #1f6feb; align-self: flex-end; }
+.bot { background: #30363d; align-self: flex-start; }
+.system { background: #161b22; align-self: center; font-size: 12px; opacity: 0.85; }
+
+.input-bar {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+  background: rgba(0,0,0,0.35);
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+}
+
+button {
+  background: #238636;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover { background: #2ea043; }
+
+.copy-btn {
+  background: #8957e5;
+}
+
+.copy-btn:hover {
+  background: #a371f7;
+}
+</style>
 </head>
 <body>
 
-<div class="container">
+<header>☢️ Wasteland Chat Encoder</header>
 
-  <div class="panel">
-    <h2>🧠 Ти пишеш нормално</h2>
-    <textarea id="plainText" placeholder="Напиши съобщение..."></textarea>
-    <button onclick="encodeText()">Кодирай →</button>
-    <button onclick="clearPlain()">Изчисти</button>
-  </div>
+<div id="chatWindow" class="chat-window"></div>
 
-  <div class="panel">
-    <h2>📡 Кодиран текст</h2>
-    <textarea id="codedText" placeholder="Тук се появява кодираният текст..."></textarea>
-    <button onclick="copyCoded()">📋 Копирай</button>
-  </div>
-
-  <div class="panel">
-    <h2>📥 Пейстни отговор (кодиран)</h2>
-    <textarea id="replyInput" placeholder="Пейстни кодирания отговор тук..."></textarea>
-    <button onclick="decodeReply()">Разкодирай ↓</button>
-  </div>
-
-  <div class="panel">
-    <h2>💬 Разкодирано</h2>
-    <textarea id="decodedText" placeholder="Разкодираният текст ще се появи тук..."></textarea>
-    <button onclick="copyDecoded()">📋 Копирай</button>
-  </div>
-
+<div class="input-bar">
+  <textarea id="plainText" rows="2" placeholder="Напиши нормално..."></textarea>
+  <button onclick="encodeText()">Кодирай</button>
+  <button class="copy-btn" onclick="copyLastEncoded()">Копирай код</button>
 </div>
 
-<script src="script.js"></script>
+<div class="input-bar">
+  <textarea id="replyInput" rows="2" placeholder="Пейстни кодирания отговор..."></textarea>
+  <button onclick="decodeReply()">Разкодирай</button>
+</div>
+
+<script>
+let lastEncodedMessage = "";
+
+// Прост алгоритмичен "код"
+function encodeWord(word){
+  return word
+    .replace(/а/gi,"4")
+    .replace(/о/gi,"0")
+    .replace(/е/gi,"3")
+    .replace(/и/gi,"1");
+}
+
+function decodeWord(word){
+  return word
+    .replace(/4/g,"а")
+    .replace(/0/g,"о")
+    .replace(/3/g,"е")
+    .replace(/1/g,"и");
+}
+
+function addMessage(text, type){
+  const chat = document.getElementById("chatWindow");
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function encodeText(){
+  let input = document.getElementById("plainText").value.trim();
+  if(!input) return;
+
+  let encoded = input.replace(/[А-Яа-яA-Za-z]+/g, encodeWord);
+  lastEncodedMessage = encoded;
+
+  addMessage("🧠 Ти: " + input, "user");
+  addMessage("🔒 Кодирано: " + encoded, "system");
+
+  document.getElementById("plainText").value = "";
+}
+
+function decodeReply(){
+  let input = document.getElementById("replyInput").value.trim();
+  if(!input) return;
+
+  let decoded = input.replace(/[A-Za-z0-9]+/g, decodeWord);
+
+  addMessage("🤖 Отговор (код): " + input, "bot");
+  addMessage("💬 Разкодирано: " + decoded, "system");
+
+  document.getElementById("replyInput").value = "";
+}
+
+function copyLastEncoded(){
+  if(!lastEncodedMessage) return alert("Няма кодирано съобщение!");
+  navigator.clipboard.writeText(lastEncodedMessage);
+  alert("Кодът е копиран!");
+}
+
+// Enter = изпращане
+document.getElementById("plainText").addEventListener("keydown", function(e){
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    encodeText();
+  }
+});
+
+document.getElementById("replyInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    decodeReply();
+  }
+});
+</script>
+
 </body>
 </html>
