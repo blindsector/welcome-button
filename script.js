@@ -82,3 +82,8 @@ document.getElementById("copyBtn").onclick = copyLastEncoded;
 
 // Първоначално зареждане
 renderChat();
+    <!-- целият ти HTML интерфейс тук -->
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
