@@ -7,13 +7,22 @@ const encodedReplyBox = document.getElementById("encodedReply");
 let chatHistory = [];
 
 /* ===== SAFE RENDER ===== */
-function renderMessage(text, type) {
-    const bubble = document.createElement("div");
-    bubble.className = "bubble " + type;
-    bubble.textContent = text;
-    chatBox.appendChild(bubble);
-    chatBox.scrollTop = chatBox.scrollHeight;
+function renderMessage(text, sender) {
+    const chat = document.getElementById("chat");
+
+    const msg = document.createElement("div");
+    msg.className = "message " + sender;
+
+    if (sender === "bot") {
+        msg.innerHTML = "🔒 <b>Кодирано:</b> " + text;
+    } else {
+        msg.textContent = "🧠 Ти: " + text;
+    }
+
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
 }
+
 
 /* ===== SEND ===== */
 window.sendMessage = function () {
