@@ -1,40 +1,26 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Wasteland Encoder Chat</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Смислов Камуфлаж v3</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
+    <h1>🕶 Смислов Камуфлаж</h1>
 
-  <div class="panel">
-    <h2>🧠 Ти пишеш нормално</h2>
-    <textarea id="plainText" placeholder="Напиши съобщение..."></textarea>
-    <button onclick="encodeText()">Кодирай →</button>
-    <button onclick="clearPlain()">Изчисти</button>
-  </div>
+    <div class="box">
+        <h2>Нормален текст</h2>
+        <textarea id="inputText" placeholder="Напиши нещо..."></textarea>
+        <button onclick="encodeText()">Кодирай →</button>
+    </div>
 
-  <div class="panel">
-    <h2>📡 Кодиран текст</h2>
-    <textarea id="codedText" placeholder="Тук се появява кодираният текст..."></textarea>
-    <button onclick="copyCoded()">📋 Копирай</button>
-  </div>
-
-  <div class="panel">
-    <h2>📥 Пейстни отговор (кодиран)</h2>
-    <textarea id="replyInput" placeholder="Пейстни кодирания отговор тук..."></textarea>
-    <button onclick="decodeReply()">Разкодирай ↓</button>
-  </div>
-
-  <div class="panel">
-    <h2>💬 Разкодирано</h2>
-    <textarea id="decodedText" placeholder="Разкодираният текст ще се появи тук..."></textarea>
-    <button onclick="copyDecoded()">📋 Копирай</button>
-  </div>
-
+    <div class="box">
+        <h2>Камуфлажен текст</h2>
+        <textarea id="encodedText" placeholder="Резултат..."></textarea>
+        <button onclick="decodeText()">← Разкодирай</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
