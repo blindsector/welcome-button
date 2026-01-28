@@ -12,24 +12,36 @@ function encodeText() {
         "чао": "тактическо оттегляне"
     };
 
-    let words = text.split(" ");
+ let translated = words.map(word => {
 
-    let translated = words.map(word => {
-        let lowerWord = word.toLowerCase();
+    // махаме пунктуация от края (, . ! ?)
+    let cleanWord = word.replace(/[.,!?]/g, "");
+    let lowerWord = cleanWord.toLowerCase();
 
-        if (dictionary[lowerWord]) {
-            let translatedWord = dictionary[lowerWord];
+    // малки думи, които не искаме да стават "Операция"
+    let smallWords = ["и","в","на","по","с","но","да","ли","го"];
 
-            // ако думата започва с главна буква
-            if (word.length > 0 && word[0] === word[0].toUpperCase()) {
-                translatedWord = translatedWord.charAt(0).toUpperCase() + translatedWord.slice(1);
-            }
+    if (dictionary[lowerWord]) {
+        let translatedWord = dictionary[lowerWord];
 
-            return translatedWord;
-        } else {
-            return "Операция " + word;
+        // ако започва с главна буква
+        if (cleanWord[0] === cleanWord[0].toUpperCase()) {
+            translatedWord = translatedWord.charAt(0).toUpperCase() + translatedWord.slice(1);
         }
-    });
+
+        return translatedWord;
+    } 
+    
+    else if (smallWords.includes(lowerWord)) {
+        return word; // оставяме малките думи както са
+    } 
+    
+    else {
+        return "Операция " + word;
+    }
+
+});
+
 
     document.getElementById("outputText").value = translated.join(" ");
 }
