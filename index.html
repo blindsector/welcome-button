@@ -44,9 +44,13 @@ button:hover {
 
 <body>
 
-<textarea id="inputText" placeholder="Напиши текст тук..."></textarea><br>
-<button onclick="encodeText()">Преведи</button><br>
-<textarea id="outputText" placeholder="Тук ще излезе резултатът..." readonly></textarea>
+<textarea id="inputText" placeholder="Напиши текст тук..."></textarea>
+
+<button onclick="encodeText()">Преведи</button>
+<button onclick="decodeText()">Разкодирай</button>
+
+<textarea id="outputText" placeholder="Тук ще излезе резултат..." readonly></textarea>
+
 
 <script>
 function encodeText() {
@@ -77,6 +81,42 @@ function encodeText() {
             result.push(word);
         }
     }
+function decodeText() {
+    let text = document.getElementById("outputText").value.toLowerCase();
+
+    let dictionary = {
+        "здравей": "брямо",
+        "как": "треко",
+        "си": "мулча",
+        "приятел": "дружко",
+        "работа": "нобма",
+        "пари": "рибки",
+        "проблем": "ледче",
+        "грешка": "подхлъз",
+        "компютър": "умник",
+        "телефон": "джобник",
+        "интернет": "мрежуля",
+        "идея": "мислувка"
+    };
+
+    let reverseDictionary = {};
+    for (let key in dictionary) {
+        reverseDictionary[dictionary[key]] = key;
+    }
+
+    let words = text.split(" ");
+    let result = [];
+
+    for (let word of words) {
+        if (reverseDictionary[word]) {
+            result.push(reverseDictionary[word]);
+        } else {
+            result.push(word);
+        }
+    }
+
+    document.getElementById("inputText").value = result.join(" ");
+}
 
     document.getElementById("outputText").value = result.join(" ");
 }
