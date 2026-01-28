@@ -50,9 +50,38 @@ button:hover {
 
 <script>
 function encodeText() {
-    document.getElementById("outputText").value = "Работи!!! 🎉";
+    let text = document.getElementById("inputText").value.toLowerCase();
+
+    let dictionary = {
+        "здравей": "брямо",
+        "как": "треко",
+        "си": "мулча",
+        "приятел": "дружко",
+        "работа": "нобма",
+        "пари": "рибки",
+        "проблем": "ледче",
+        "грешка": "подхлъз",
+        "компютър": "умник",
+        "телефон": "джобник",
+        "интернет": "мрежуля",
+        "идея": "мислувка"
+    };
+
+    let words = text.split(" ");
+    let result = [];
+
+    for (let word of words) {
+        if (dictionary[word]) {
+            result.push(dictionary[word]);
+        } else {
+            result.push(word);
+        }
+    }
+
+    document.getElementById("outputText").value = result.join(" ");
 }
 </script>
+
 
 </body>
 </html>
