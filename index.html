@@ -72,7 +72,14 @@ let dictionary = {
 
 
   let words = text.toLowerCase().split(" ");
-  let translated = words.map(word => dictionary[word] || word);
+let translated = words.map(word => {
+    if (dictionary[word]) {
+        return dictionary[word];
+    } else {
+        return "операция " + word;
+    }
+});
+
 
   document.getElementById("outputText").value = translated.join(" ");
 }
