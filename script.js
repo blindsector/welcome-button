@@ -1,4 +1,3 @@
-// === БАЗОВ РЕЧНИК (можеш да добавяш още) ===
 const dictionary = {
   "пари": "бурканец",
   "план": "рецептак",
@@ -30,55 +29,57 @@ const dictionary = {
   "надежда": "искрица"
 };
 
-// === ОБРАТЕН РЕЧНИК ===
 const reverseDictionary = {};
 for (let key in dictionary) {
   reverseDictionary[dictionary[key]] = key;
 }
 
-// === НАСТАВКИ ЗА АЛГОРИТМИЧНО КОДИРАНЕ ===
 const suffixes = ["ец", "ак", "ник", "лка", "ица", "илка"];
 
-// === ПРОСТО РАНДОМ КОДИРАНЕ НА ДУМА КОЯТО Я НЯМА В РЕЧНИКА ===
 function mutateWord(word) {
-  if (word.length < 4) return word;
-
   let suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-  return word.slice(0, word.length - 1) + suffix;
+  return word.slice(0, -1) + suffix;
 }
 
-// === КОДИРАНЕ ===
+function preserveCase(original, transformed) {
+  if (original[0] === original[0].toUpperCase()) {
+    return transformed.charAt(0).toUpperCase() + transformed.slice(1);
+  }
+  return transformed;
+}
+
 function encodeText() {
-  let text = document.getElementById("plainText").value.toLowerCase();
-  let words = text.split(/\b/);
+  let text = document.getElementById("plainText").value;
 
-  let encoded = words.map(w => {
-    let clean = w.trim();
+  let encoded = text.replace(/[А-Яа-я]+/g, word => {
+    let lower = word.toLowerCase();
 
-    if (dictionary[clean]) return dictionary[clean];
-
-    if (/^[а-яa-z]+$/i.test(clean) && clean.length > 5 && Math.random() < 0.35) {
-      return mutateWord(clean);
+    if (dictionary[lower]) {
+      return preserveCase(word, dictionary[lower]);
     }
 
-    return w;
+    if (word.length > 5 && Math.random() < 0.45) {
+      return preserveCase(word, mutateWord(lower));
+    }
+
+    return word;
   });
 
-  document.getElementById("codedText").value = encoded.join("");
+  document.getElementById("codedText").value = encoded;
 }
 
-// === РАЗКОДИРАНЕ ===
 function decodeText() {
-  let text = document.getElementById("codedText").value.toLowerCase();
-  let words = text.split(/\b/);
+  let text = document.getElementById("codedText").value;
 
-  let decoded = words.map(w => {
-    let clean = w.trim();
+  let decoded = text.replace(/[А-Яа-я]+/g, word => {
+    let lower = word.toLowerCase();
 
-    if (reverseDictionary[clean]) return reverseDictionary[clean];
+    if (reverseDictionary[lower]) {
+      return preserveCase(word, reverseDictionary[lower]);
+    }
 
-    return w;
+    return word;
   });
 
-  document.getElementById("plainText").value = decoded.join("");
+  document.getElementById("plainText").value = decoded;
 }
