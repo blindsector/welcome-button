@@ -2,18 +2,13 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Таен Чат 2.0</title>
+<title>Таен Чат v2</title>
 <style>
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #00b3ff, #0077ff);
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
     color: white;
-}
-
-h1 {
-    text-align: center;
-    padding: 15px;
 }
 
 .container {
@@ -24,170 +19,194 @@ h1 {
 
 .panel {
     flex: 1;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
     padding: 15px;
     border-radius: 15px;
+    backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
 }
 
-.chatlog {
+h2 {
+    margin-top: 0;
+}
+
+.chatbox {
     flex: 1;
     background: white;
     color: black;
-    border-radius: 10px;
     padding: 10px;
+    border-radius: 10px;
     overflow-y: auto;
     margin-bottom: 10px;
-    font-size: 14px;
+    font-family: monospace;
 }
 
 textarea, select {
     width: 100%;
+    padding: 10px;
     border-radius: 8px;
     border: none;
-    padding: 8px;
-    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 14px;
 }
 
 button {
-    margin-top: 8px;
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
     border: none;
     background: #ff4d4d;
     color: white;
     font-weight: bold;
     cursor: pointer;
+    margin-bottom: 5px;
 }
-button:hover { transform: scale(1.05); }
 
-.label {
-    font-weight: bold;
-    margin-top: 5px;
+button:hover {
+    background: #ff1a1a;
 }
 </style>
 </head>
 <body>
 
-<h1>🕵️ Таен Чат Система 2.0</h1>
-
 <div class="container">
 
-    <!-- ЛЯВО: ТИ КЪМ МЕН -->
+    <!-- ЛЯВО -->
     <div class="panel">
-        <div class="label">Ти пишеш нормално</div>
-        <div id="myChat" class="chatlog"></div>
+        <h2>🧠 Ти пишеш нормално</h2>
+        <div id="myChat" class="chatbox"></div>
 
         <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
 
-        <div class="label">Режим</div>
         <select id="modeSelect">
-            <option value="garaga">🐔 Гарга</option>
-            <option value="spy">🕵️ Шпиони</option>
-            <option value="magic">🧙 Магьосник</option>
+            <option value="garaga">Гарга режим</option>
+            <option value="shadow">Сянка режим</option>
         </select>
 
-        <div class="label">Схема (праща се само в първото съобщение)</div>
-        <textarea id="schemeBox" placeholder="#режим: гарга"></textarea>
+        <button onclick="sendMessage()">Изпрати ➜</button>
+        <button onclick="clearChat()">🗑 Изчисти история</button>
     </div>
 
-    <!-- ДЯСНО: КОДИРАНО И РАЗКОДИРАНО -->
+    <!-- ДЯСНО -->
     <div class="panel">
-        <div class="label">🔒 Кодиран текст за пращане</div>
-        <div id="encodedChat" class="chatlog"></div>
-        <button onclick="copyEncoded()">📋 Копирай последното</button>
+        <h2>🔐 Кодиран текст</h2>
+        <div id="encodedChat" class="chatbox"></div>
 
-        <div class="label">📩 Пейстни мой отговор (кодиран)</div>
-        <textarea id="incomingText" placeholder="Пейстни кодирания текст от ChatGPT..."></textarea>
+        <button onclick="copyLast()">📋 Копирай последното</button>
 
-        <div class="label">🔓 Разкодирано съобщение</div>
-        <div id="decodedChat" class="chatlog"></div>
+        <h2>📥 Пейстни отговор (кодиран)</h2>
+        <textarea id="replyInput" placeholder="Пейстни кодирания отговор..."></textarea>
+        <button onclick="decodeReply()">Разкодирай ⬇</button>
+
+        <h2>💬 Разкодирано</h2>
+        <div id="decodedChat" class="chatbox"></div>
     </div>
 
 </div>
 
 <script>
-let firstMessage = true;
-
 const dictionaries = {
     garaga: {
-        "здравей":"брямо",
-        "как":"треко",
-        "си":"зурна",
-        "приятел":"мулча",
-        "добре":"шивра"
+        "здравей":"глувек",
+        "как":"тром",
+        "си":"вард",
+        "приятел":"мурка",
+        "да":"трола",
+        "не":"вакра",
+        "план":"схемора",
+        "чат":"криптор",
+        "тайн":"глувек",
+        "съобщение":"деклара"
     },
-    spy: {
-        "здравей":"агент",
-        "как":"статус",
-        "си":"обект",
-        "приятел":"съюзник",
-        "добре":"стабилно"
-    },
-    magic: {
-        "здравей":"алохом",
-        "как":"марака",
-        "си":"зурел",
-        "приятел":"фелора",
-        "добре":"вирал"
+    shadow: {
+        "здравей":"нокт",
+        "как":"свил",
+        "си":"жрак",
+        "приятел":"мрак",
+        "да":"зор",
+        "не":"крип",
+        "план":"сенка",
+        "чат":"тунел",
+        "тайн":"мъгла",
+        "съобщение":"кодекс"
     }
 };
 
-function encodeText(text, mode) {
+function encode(text, mode){
     let dict = dictionaries[mode];
-    let words = text.toLowerCase().split(" ");
-    return words.map(w => dict[w] || w).join(" ");
+    return text.split(" ").map(word => dict[word.toLowerCase()] || word).join(" ");
 }
 
-function decodeText(text) {
-    let allDicts = Object.values(dictionaries);
-    let words = text.toLowerCase().split(" ");
-    return words.map(w => {
-        for (let dict of allDicts) {
-            for (let key in dict) {
-                if (dict[key] === w) return key;
-            }
-        }
-        return w;
-    }).join(" ");
+function decode(text, mode){
+    let dict = dictionaries[mode];
+    let reversed = Object.fromEntries(Object.entries(dict).map(([k,v])=>[v,k]));
+    return text.split(" ").map(word => reversed[word.toLowerCase()] || word).join(" ");
 }
 
-document.getElementById("inputText").addEventListener("keydown", function(e){
-    if(e.key === "Enter" && !e.shiftKey){
-        e.preventDefault();
+function scrollToBottom(id){
+    let el = document.getElementById(id);
+    el.scrollTop = el.scrollHeight;
+}
 
-        let text = this.value.trim();
-        if(!text) return;
+function saveHistory(){
+    localStorage.setItem("myChat", myChat.innerHTML);
+    localStorage.setItem("encodedChat", encodedChat.innerHTML);
+    localStorage.setItem("decodedChat", decodedChat.innerHTML);
+}
 
-        let mode = document.getElementById("modeSelect").value;
-        let encoded = encodeText(text, mode);
+function loadHistory(){
+    myChat.innerHTML = localStorage.getItem("myChat") || "";
+    encodedChat.innerHTML = localStorage.getItem("encodedChat") || "";
+    decodedChat.innerHTML = localStorage.getItem("decodedChat") || "";
+}
 
-        if(firstMessage){
-            let scheme = document.getElementById("schemeBox").value.trim();
-            if(scheme) encoded = scheme + "\n" + encoded;
-            firstMessage = false;
-        }
+function sendMessage(){
+    let text = inputText.value.trim();
+    if(!text) return;
 
-        document.getElementById("myChat").innerHTML += "<div>🧑 " + text + "</div>";
-        document.getElementById("encodedChat").innerHTML += "<div>🔒 " + encoded + "</div>";
+    let mode = modeSelect.value;
+    let encoded = encode(text, mode);
 
-        this.value = "";
+    myChat.innerHTML += "🧑: " + text + "<br>";
+    encodedChat.innerHTML += "🔒: " + encoded + "<br>";
+
+    inputText.value = "";
+
+    scrollToBottom("myChat");
+    scrollToBottom("encodedChat");
+    saveHistory();
+}
+
+function decodeReply(){
+    let text = replyInput.value.trim();
+    if(!text) return;
+
+    let mode = modeSelect.value;
+    let decoded = decode(text, mode);
+
+    decodedChat.innerHTML += "🤖: " + decoded + "<br>";
+    replyInput.value = "";
+
+    scrollToBottom("decodedChat");
+    saveHistory();
+}
+
+function copyLast(){
+    let lines = encodedChat.innerText.trim().split("\n");
+    navigator.clipboard.writeText(lines[lines.length-1].replace("🔒: ",""));
+    alert("Копирано!");
+}
+
+function clearChat(){
+    if(confirm("Сигурен ли си?")){
+        myChat.innerHTML = "";
+        encodedChat.innerHTML = "";
+        decodedChat.innerHTML = "";
+        localStorage.clear();
     }
-});
-
-document.getElementById("incomingText").addEventListener("input", function(){
-    let decoded = decodeText(this.value);
-    document.getElementById("decodedChat").innerHTML = "<div>🤖 " + decoded + "</div>";
-});
-
-function copyEncoded(){
-    let chat = document.getElementById("encodedChat");
-    let last = chat.lastElementChild;
-    if(!last) return;
-    navigator.clipboard.writeText(last.innerText.replace("🔒 ",""));
 }
+
+loadHistory();
 </script>
 
 </body>
