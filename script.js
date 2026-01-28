@@ -1,48 +1,73 @@
-import { encodeText } from "./semanticEngine.js";
+import { encodeText, decodeText } from "./semanticEngine.js";
 
 const inputText = document.getElementById("inputText");
 const chatBox = document.getElementById("chatBox");
-const sendBtn = document.getElementById("sendBtn");
+const encodedReplyBox = document.getElementById("encodedReply");
 
-let history = [];
+let chatHistory = JSON.parse(localStorage.getItem("wastelandChat")) || [];
 
-function renderMessage(text, type) {
-    const bubble = document.createElement("div");
-    bubble.className = `bubble ${type}`;
-    bubble.textContent = text;
-    chatBox.appendChild(bubble);
+/* ================= RENDER ================= */
+function renderChat() {
+    chatBox.innerHTML = "";
+
+    chatHistory.forEach(msg => {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble " + msg.type;
+        bubble.textContent = msg.text;
+        chatBox.appendChild(bubble);
+    });
+
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+/* ================= SAVE MESSAGE ================= */
+function addMessage(text, type) {
+    chatHistory.push({ text, type });
+    localStorage.setItem("wastelandChat", JSON.stringify(chatHistory));
+    renderChat();
+}
+
+/* ================= SEND MESSAGE ================= */
 function sendMessage() {
     const text = inputText.value.trim();
     if (!text) return;
 
-    renderMessage(text, "user");
+    addMessage("🧠 Ти: " + text, "user");
 
     const encoded = encodeText(text);
-    setTimeout(() => renderMessage(encoded, "bot"), 300);
+    setTimeout(() => {
+        addMessage("🔐 Кодирано: " + encoded, "coded");
+    }, 300);
 
     inputText.value = "";
 }
-function copyLastCode() {
-    const bubbles = document.querySelectorAll(".coded");
-    if (bubbles.length === 0) return;
-    const last = bubbles[bubbles.length - 1].innerText;
-    navigator.clipboard.writeText(last);
-}
 
+/* ================= COPY LAST CODE ================= */
+window.copyLastCode = function () {
+    const coded = chatHistory.filter(m => m.type === "coded");
+    if (!coded.length) return alert("Няма кодирано съобщение");
 
-sendBtn.addEventListener("click", sendMessage);
+    navigator.clipboard.writeText(coded[coded.length - 1].text.replace("🔐 Кодирано: ", ""));
+    alert("Кодът е копиран!");
+};
 
-inputText.addEventListener("keydown", (e) => {
+/* ================= DECODE ================= */
+window.decodeMessage = function () {
+    const codedText = encodedReplyBox.value.trim();
+    if (!codedText) return alert("Постави кодирано съобщение");
+
+    const decoded = decodeText(codedText);
+    addMessage("💬 Разкодирано: " + decoded, "decoded");
+    encodedReplyBox.value = "";
+};
+
+/* ================= ENTER TO SEND ================= */
+inputText.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
     }
-    inputBox.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault(); // спира нов ред
-        handleEncode();     // праща съобщението
-    }
 });
+
+/* ================= START ================= */
+renderChat();
