@@ -1,89 +1,54 @@
-import { encodeText, decodeText } from "./semanticEngine.js";
+import { encodeText, decodeText } from "./semanticEngine.js"
 
-const inputBox = document.getElementById("inputText");
-const chatBox = document.getElementById("chatBox");
-const encodedReplyBox = document.getElementById("encodedReply");
+const inputText = document.getElementById("inputText")
+const replyInput = document.getElementById("replyInput")
+const chatBox = document.getElementById("chatBox")
 
-let chatHistory = JSON.parse(localStorage.getItem("wastelandChat")) || [];
+const history = JSON.parse(localStorage.getItem("wastelandChat") || "[]")
 
-// =======================
-// 💬 РЕНДЕР НА ЧАТА
-// =======================
-function renderChat() {
-  chatBox.innerHTML = "";
-
-  chatHistory.forEach(msg => {
-    const bubble = document.createElement("div");
-    bubble.className = msg.type === "user" ? "bubble user" : "bubble coded";
-    bubble.textContent = msg.text;
-    chatBox.appendChild(bubble);
-  });
-
-  chatBox.scrollTop = chatBox.scrollHeight;
+function save() {
+  localStorage.setItem("wastelandChat", JSON.stringify(history))
 }
 
-// =======================
-// ➕ ДОБАВЯНЕ НА СЪОБЩЕНИЕ
-// =======================
+function render() {
+  chatBox.innerHTML = ""
+  history.forEach(msg => {
+    const div = document.createElement("div")
+    div.className = "bubble " + msg.type
+    div.textContent = msg.text
+    chatBox.appendChild(div)
+  })
+  chatBox.scrollTop = chatBox.scrollHeight
+}
+
 function addMessage(text, type) {
-  chatHistory.push({ text, type });
-  localStorage.setItem("wastelandChat", JSON.stringify(chatHistory));
-  renderChat();
+  history.push({ text, type })
+  save()
+  render()
 }
 
-// =======================
-// 🔐 КОДИРАНЕ
-// =======================
-function handleEncode() {
-  const text = inputBox.value.trim();
-  if (!text) return;
-
-  addMessage("🧠 Ти: " + text, "user");
-
-  const encoded = encodeText(text);
-  addMessage("🔒 Кодирано: " + encoded, "coded");
-
-  encodedReplyBox.value = encoded;
-  inputBox.value = "";
+document.getElementById("encodeBtn").onclick = () => {
+  const text = inputText.value.trim()
+  if (!text) return
+  const encoded = encodeText(text)
+  addMessage("🧠 Ти: " + text, "user")
+  addMessage("🔒 Кодирано: " + encoded, "code")
+  inputText.value = ""
 }
 
-// =======================
-// 🔓 РАЗКОДИРАНЕ
-// =======================
-function handleDecode() {
-  const text = encodedReplyBox.value.trim();
-  if (!text) return;
-
-  const decoded = decodeText(text);
-  addMessage("🔓 Разкодирано: " + decoded, "user");
+document.getElementById("decodeBtn").onclick = () => {
+  const text = replyInput.value.trim()
+  if (!text) return
+  const decoded = decodeText(text)
+  addMessage("📨 Получено: " + text, "code")
+  addMessage("💬 Разкодирано: " + decoded, "user")
+  replyInput.value = ""
 }
 
-// =======================
-// 📋 КОПИРАНЕ НА ПОСЛЕДНОТО КОДИРАНО
-// =======================
-function copyLastEncoded() {
-  if (!encodedReplyBox.value) return;
-  navigator.clipboard.writeText(encodedReplyBox.value);
+document.getElementById("copyBtn").onclick = () => {
+  const last = history.filter(m => m.type === "code").pop()
+  if (!last) return
+  navigator.clipboard.writeText(last.text.replace("🔒 Кодирано: ", ""))
 }
 
-// =======================
-// ⌨️ ENTER = ИЗПРАЩАНЕ
-// =======================
-inputBox.addEventListener("keydown", e => {
-  if (e.key === "Enter") handleEncode();
-});
-
-// =======================
-// 🔘 БУТОНИ
-// =======================
-document.getElementById("encodeBtn").onclick = handleEncode;
-document.getElementById("decodeBtn").onclick = handleDecode;
-document.getElementById("copyBtn").onclick = copyLastEncoded;
-
-// Първоначално зареждане
-renderChat();
-    <!-- целият ти HTML интерфейс тук -->
-
-    <script type="module" src="script.js"></script>
-</body>
-</html>
+render()
