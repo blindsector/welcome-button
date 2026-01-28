@@ -25,6 +25,13 @@ function sendMessage() {
 
     inputText.value = "";
 }
+function copyLastCode() {
+    const bubbles = document.querySelectorAll(".coded");
+    if (bubbles.length === 0) return;
+    const last = bubbles[bubbles.length - 1].innerText;
+    navigator.clipboard.writeText(last);
+}
+
 
 sendBtn.addEventListener("click", sendMessage);
 
