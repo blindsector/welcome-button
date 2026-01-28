@@ -1,118 +1,75 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: white;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Основна подредба */
-.container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    padding: 20px;
+h1 {
+  margin: 20px 0 10px;
 }
 
-/* Панели */
-.panel {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
+.chat-box {
+  width: 90%;
+  max-width: 900px;
+  height: 420px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 12px;
+  padding: 15px;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  margin-bottom: 15px;
 }
 
-/* Текстови полета */
+.bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  margin: 6px 0;
+  max-width: 75%;
+  word-wrap: break-word;
+}
+
+.user {
+  background: #2979ff;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.code {
+  background: #263238;
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.input-row {
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
 textarea {
-    width: 100%;
-    height: 120px;
-    border-radius: 8px;
-    border: none;
-    padding: 10px;
-    font-size: 14px;
-    resize: none;
-    margin-bottom: 10px;
-    outline: none;
+  flex: 1;
+  height: 70px;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  resize: none;
 }
 
-/* Бутони */
 button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    margin-right: 5px;
-    font-weight: bold;
-    transition: 0.2s ease;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-button:hover {
-    transform: translateY(-1px);
-    opacity: 0.9;
-}
-
-/* ЧАТ КУТИЯ */
-#chatBox {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-/* Общ стил за съобщения */
-.message {
-    max-width: 75%;
-    padding: 10px 14px;
-    margin: 6px 10px;
-    border-radius: 14px;
-    line-height: 1.4;
-    font-size: 14px;
-    word-wrap: break-word;
-    animation: fadeIn 0.2s ease-in-out;
-}
-
-/* USER */
-.message.user {
-    align-self: flex-end;
-    background: linear-gradient(135deg, #2b6cff, #1f4fd8);
-    color: white;
-    border-bottom-right-radius: 6px;
-}
-
-/* SYSTEM */
-.message.system {
-    align-self: flex-start;
-    background: rgba(0, 0, 0, 0.55);
-    color: #e8f0ff;
-    border-bottom-left-radius: 6px;
-    backdrop-filter: blur(4px);
-}
-
-/* Малки иконки отпред */
-.message.user::before {
-    content: "👤 ";
-    opacity: 0.8;
-}
-
-.message.system::before {
-    content: "🛰 ";
-    opacity: 0.7;
-}
-
-/* Скролбар (по избор, но изглежда яко) */
-#chatBox::-webkit-scrollbar {
-    width: 6px;
-}
-
-#chatBox::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-}
-
-/* Анимация */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+#encodeBtn { background: #2e7d32; color: white; }
+#decodeBtn { background: #1565c0; color: white; }
+#copyBtn   { background: #6a1b9a; color: white; }
