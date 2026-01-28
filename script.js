@@ -1,114 +1,84 @@
-const dictionary = {
-  "пари":"бурканец",
-  "план":"рецептак",
-  "среща":"вечерник",
-  "проблем":"мъглица",
-  "опасност":"тъмняк",
-  "полиция":"градинарец",
-  "човек":"оцелялник",
-  "приятел":"дружак",
-  "враг":"гадинец",
-  "град":"руинак",
-  "кола":"бръмчалка",
-  "оръжие":"гърмялник",
-  "вода":"мокрилка",
-  "храна":"манджак",
-  "път":"прашилка",
-  "нощ":"тъмнилка",
-  "ден":"жегалник",
-  "работа":"далаверак",
-  "информация":"слухец",
-  "тайна":"скривалица",
-  "място":"точка",
-  "сигнал":"знакалник",
-  "помощ":"подкрепник"
-};
+import { encodeText, decodeText } from "./semanticEngine.js";
 
-const reverseDictionary = {};
-for (let key in dictionary) {
-  reverseDictionary[dictionary[key]] = key;
+const inputBox = document.getElementById("inputText");
+const chatBox = document.getElementById("chatBox");
+const encodedReplyBox = document.getElementById("encodedReply");
+
+let chatHistory = JSON.parse(localStorage.getItem("wastelandChat")) || [];
+
+// =======================
+// 💬 РЕНДЕР НА ЧАТА
+// =======================
+function renderChat() {
+  chatBox.innerHTML = "";
+
+  chatHistory.forEach(msg => {
+    const bubble = document.createElement("div");
+    bubble.className = msg.type === "user" ? "bubble user" : "bubble coded";
+    bubble.textContent = msg.text;
+    chatBox.appendChild(bubble);
+  });
+
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-let chatHistory = [];
-
-function preserveCase(original, transformed) {
-  if (original[0] === original[0].toUpperCase()) {
-    return transformed.charAt(0).toUpperCase() + transformed.slice(1);
-  }
-  return transformed;
+// =======================
+// ➕ ДОБАВЯНЕ НА СЪОБЩЕНИЕ
+// =======================
+function addMessage(text, type) {
+  chatHistory.push({ text, type });
+  localStorage.setItem("wastelandChat", JSON.stringify(chatHistory));
+  renderChat();
 }
 
-function encodeWord(word){
-  let lower = word.toLowerCase();
+// =======================
+// 🔐 КОДИРАНЕ
+// =======================
+function handleEncode() {
+  const text = inputBox.value.trim();
+  if (!text) return;
 
-  if(dictionary[lower]){
-    return preserveCase(word, dictionary[lower]);
-  }
+  addMessage("🧠 Ти: " + text, "user");
 
-  // Случайна наставка, но пазим основата
-  if(word.length > 6 && Math.random() < 0.35){
-    return preserveCase(word, lower + "ник");
-  }
+  const encoded = encodeText(text);
+  addMessage("🔒 Кодирано: " + encoded, "coded");
 
-  return word;
+  encodedReplyBox.value = encoded;
+  inputBox.value = "";
 }
 
-function decodeWord(word){
-  let lower = word.toLowerCase();
+// =======================
+// 🔓 РАЗКОДИРАНЕ
+// =======================
+function handleDecode() {
+  const text = encodedReplyBox.value.trim();
+  if (!text) return;
 
-  // Първо проверяваме пълно съвпадение в речника
-  if(reverseDictionary[lower]){
-    return preserveCase(word, reverseDictionary[lower]);
-  }
-
-  // После махаме изкуствените наставки
-  const suffixes = ["ник","ец","ак","ка"];
-  for(let suf of suffixes){
-    if(lower.endsWith(suf) && lower.length > suf.length + 2){
-      let base = lower.slice(0, -suf.length);
-      return preserveCase(word, base);
-    }
-  }
-
-  return word;
+  const decoded = decodeText(text);
+  addMessage("🔓 Разкодирано: " + decoded, "user");
 }
 
-function encodeText(){
-  let input = document.getElementById("plainText").value;
-  if(!input.trim()) return;
-
-  let encoded = input.replace(/[А-Яа-я]+/g, encodeWord);
-
-  chatHistory.push("🧠 Ти: " + input);
-  chatHistory.push("🔒 Кодирано: " + encoded);
-
-  document.getElementById("codedText").value = chatHistory.join("\n\n");
-  document.getElementById("plainText").value = "";
+// =======================
+// 📋 КОПИРАНЕ НА ПОСЛЕДНОТО КОДИРАНО
+// =======================
+function copyLastEncoded() {
+  if (!encodedReplyBox.value) return;
+  navigator.clipboard.writeText(encodedReplyBox.value);
 }
 
-function decodeReply(){
-  let input = document.getElementById("replyInput").value;
-  if(!input.trim()) return;
+// =======================
+// ⌨️ ENTER = ИЗПРАЩАНЕ
+// =======================
+inputBox.addEventListener("keydown", e => {
+  if (e.key === "Enter") handleEncode();
+});
 
-  let decoded = input.replace(/[А-Яа-я]+/g, decodeWord);
+// =======================
+// 🔘 БУТОНИ
+// =======================
+document.getElementById("encodeBtn").onclick = handleEncode;
+document.getElementById("decodeBtn").onclick = handleDecode;
+document.getElementById("copyBtn").onclick = copyLastEncoded;
 
-  chatHistory.push("🤖 Отговор (код): " + input);
-  chatHistory.push("💬 Разкодирано: " + decoded);
-
-  document.getElementById("decodedText").value = chatHistory.join("\n\n");
-  document.getElementById("replyInput").value = "";
-}
-
-function copyCoded(){
-  navigator.clipboard.writeText(document.getElementById("codedText").value);
-}
-
-function copyDecoded(){
-  navigator.clipboard.writeText(document.getElementById("decodedText").value);
-}
-
-function clearChat(){
-  chatHistory = [];
-  document.getElementById("codedText").value = "";
-  document.getElementById("decodedText").value = "";
-}
+// Първоначално зареждане
+renderChat();
