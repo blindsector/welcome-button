@@ -52,65 +52,6 @@ textarea {
 <textarea id="outputText" placeholder="Тук ще излезе резултатът..." readonly></textarea>
 
 
-<script>
-function encodeText() {
-  let text = document.getElementById("inputText").value;
-
-let dictionary = {
-    "кафе": "сутрешно гориво",
-    "работа": "полярна експедиция",
-    "шеф": "капитанът на айсберга",
-    "проблем": "леко топене на леда",
-    "грешка": "подхлъзване по мисълта",
-    "компютър": "мислещият кашон",
-    "телефон": "джобният оракул",
-    "интернет": "голямата невидима мрежа",
-    "пари": "рибни ресурси",
-    "почивка": "хоризонтално стратегическо планиране",
-    "идея": "мозъчна снежинка"
-};
-
-
-let words = text.split(" ");
-
-let translated = words.map(word => {
-// отделяме пунктуация в края (.,!?)
-let match = word.match(/^([А-Яа-яA-Za-z]+)([.,!?]*)$/);
-
-let cleanWord = word;
-let punctuation = "";
-
-if (match) {
-    cleanWord = match[1];
-    punctuation = match[2];
-}
-
-let lowerWord = cleanWord.toLowerCase();
-
-
-if (dictionary[lowerWord]) {
-    let translatedWord = dictionary[lowerWord];
-
-    // ако оригиналната дума е започвала с главна буква
-    if (word.length > 0 && word[0] === word[0].toUpperCase()) {
-        translatedWord = translatedWord.charAt(0).toUpperCase() + translatedWord.slice(1);
-    }
-
- return translatedWord + punctuation;
-
-}
-
-    } else {
-return "Операция " + cleanWord + punctuation;
-
-    }
-});
-
-
-  document.getElementById("outputText").value = translated.join(" ");
-}
-
-</script>
 <script src="script.js"></script>
 
 </body>
