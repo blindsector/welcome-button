@@ -2,126 +2,114 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Таен Чат 😂</title>
-
+<title>Таен Чат 😎</title>
 <style>
 body {
-    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #00c6ff, #0072ff);
+    font-family: Arial, sans-serif;
     text-align: center;
-    padding-top: 50px;
+    padding: 20px;
+    color: white;
 }
-
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+.box {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 15px;
+}
 textarea {
-    width: 80%;
-    max-width: 500px;
-    height: 100px;
-    margin: 10px;
+    width: 90%;
+    height: 120px;
+    margin-top: 10px;
     padding: 10px;
-    font-size: 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: none;
     resize: none;
+    font-size: 16px;
 }
-
 button {
-    padding: 15px 40px;
-    font-size: 20px;
+    margin-top: 10px;
+    padding: 8px 20px;
+    border-radius: 10px;
+    border: none;
     background: #ff4757;
     color: white;
-    border: none;
-    border-radius: 10px;
     cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #ff6b81;
-    transform: scale(1.05);
 }
 </style>
 </head>
-
 <body>
 
-<textarea id="inputText" placeholder="Напиши текст тук..."></textarea>
+<h1>🕵️‍♂️ Таен Чат Система</h1>
 
-<button onclick="encodeText()">Преведи</button>
-<button onclick="decodeText()">Разкодирай</button>
+<div class="container">
 
-<textarea id="outputText" placeholder="Тук ще излезе резултат..." readonly></textarea>
+<div class="box">
+<h2>🧠 Ти пишеш нормално</h2>
+<textarea id="inputNormal" placeholder="Пиши нормално..."></textarea>
+<h3>🔐 Кодиран текст за пращане</h3>
+<textarea id="outputEncoded" readonly></textarea>
+<button onclick="copyEncoded()">📋 Копирай</button>
+</div>
 
+<div class="box">
+<h2>📩 Пейстни отговора (кодиран)</h2>
+<textarea id="inputEncoded" placeholder="Пейстни кодирания текст от мен..."></textarea>
+<h3>🔓 Разкодирано съобщение</h3>
+<textarea id="outputDecoded" readonly></textarea>
+</div>
+
+</div>
 
 <script>
-function encodeText() {
-    let text = document.getElementById("inputText").value.toLowerCase();
+const dictionary = {
+"здравей":"брямо",
+"как":"треко",
+"си":"мулча",
+"приятел":"дружко",
+"работа":"нобма",
+"пари":"рибки",
+"проблем":"ледче",
+"грешка":"подхлъз",
+"компютър":"умник",
+"телефон":"джобник",
+"интернет":"мрежуля",
+"идея":"мислувка"
+};
 
-    let dictionary = {
-        "здравей": "брямо",
-        "как": "треко",
-        "си": "мулча",
-        "приятел": "дружко",
-        "работа": "нобма",
-        "пари": "рибки",
-        "проблем": "ледче",
-        "грешка": "подхлъз",
-        "компютър": "умник",
-        "телефон": "джобник",
-        "интернет": "мрежуля",
-        "идея": "мислувка"
-    };
-
-    let words = text.split(" ");
-    let result = [];
-
-    for (let word of words) {
-        if (dictionary[word]) {
-            result.push(dictionary[word]);
-        } else {
-            result.push(word);
-        }
-    }
-function decodeText() {
-    let text = document.getElementById("outputText").value.toLowerCase();
-
-    let dictionary = {
-        "здравей": "брямо",
-        "как": "треко",
-        "си": "мулча",
-        "приятел": "дружко",
-        "работа": "нобма",
-        "пари": "рибки",
-        "проблем": "ледче",
-        "грешка": "подхлъз",
-        "компютър": "умник",
-        "телефон": "джобник",
-        "интернет": "мрежуля",
-        "идея": "мислувка"
-    };
-
-    let reverseDictionary = {};
-    for (let key in dictionary) {
-        reverseDictionary[dictionary[key]] = key;
-    }
-
-    let words = text.split(" ");
-    let result = [];
-
-    for (let word of words) {
-        if (reverseDictionary[word]) {
-            result.push(reverseDictionary[word]);
-        } else {
-            result.push(word);
-        }
-    }
-
-    document.getElementById("inputText").value = result.join(" ");
+const reverseDictionary = {};
+for (let key in dictionary) {
+    reverseDictionary[dictionary[key]] = key;
 }
 
-    document.getElementById("outputText").value = result.join(" ");
+function encode(text) {
+    return text.toLowerCase().split(" ").map(word => dictionary[word] || word).join(" ");
+}
+
+function decode(text) {
+    return text.toLowerCase().split(" ").map(word => reverseDictionary[word] || word).join(" ");
+}
+
+document.getElementById("inputNormal").addEventListener("input", e => {
+    document.getElementById("outputEncoded").value = encode(e.target.value);
+});
+
+document.getElementById("inputEncoded").addEventListener("input", e => {
+    document.getElementById("outputDecoded").value = decode(e.target.value);
+});
+
+function copyEncoded() {
+    const text = document.getElementById("outputEncoded");
+    text.select();
+    document.execCommand("copy");
+    alert("Кодираният текст е копиран!");
 }
 </script>
-
 
 </body>
 </html>
