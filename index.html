@@ -1,63 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="bg">
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome Button</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Таен Чат 😂</title>
 
-    button {
-      padding: 20px 40px;
-      font-size: 24px;
-      border: none;
-      border-radius: 12px;
-      background-color: #ff4b5c;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    
-textarea {
-  width: 80%;
-  max-width: 500px;
-  height: 100px;
-  margin: 10px;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  resize: none;
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    text-align: center;
+    padding-top: 50px;
 }
 
-    button:hover {
-      background-color: #ff1e38;
-      transform: scale(1.05);
-    }
-  </style>
+textarea {
+    width: 80%;
+    max-width: 500px;
+    height: 100px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    resize: none;
+}
+
+button {
+    padding: 15px 40px;
+    font-size: 20px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ff6b81;
+    transform: scale(1.05);
+}
+</style>
 </head>
+
 <body>
 
-<textarea id="inputText" placeholder="Напиши текст тук..."></textarea>
-
-<button onclick="encodeText()">Преведи</button>
-
+<textarea id="inputText" placeholder="Напиши текст тук..."></textarea><br>
+<button onclick="encodeText()">Преведи</button><br>
 <textarea id="outputText" placeholder="Тук ще излезе резултатът..." readonly></textarea>
-
 
 <script>
 function encodeText() {
-    alert("Работи!");
+    document.getElementById("outputText").value = "Работи!!! 🎉";
 }
 </script>
-
 
 </body>
 </html>
