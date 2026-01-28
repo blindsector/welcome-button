@@ -4,154 +4,171 @@
 <meta charset="UTF-8">
 <title>Таен Чат v3</title>
 <style>
-body {margin:0;font-family:Arial;background:linear-gradient(135deg,#00c6ff,#0072ff);color:white;}
-.container{display:flex;gap:20px;padding:20px}
-.panel{flex:1;background:rgba(255,255,255,.08);padding:15px;border-radius:15px;backdrop-filter:blur(10px);display:flex;flex-direction:column}
-.chatbox{flex:1;background:white;color:black;padding:10px;border-radius:10px;overflow-y:auto;margin-bottom:10px;font-family:monospace}
-textarea,select{width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:10px;font-size:14px}
-button{padding:10px;border-radius:8px;border:none;background:#ff4d4d;color:white;font-weight:bold;cursor:pointer;margin-bottom:5px}
-button:hover{background:#ff1a1a}
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color:white;
+}
+.container {
+  display:flex;
+  gap:20px;
+  padding:20px;
+}
+.box {
+  flex:1;
+  background: rgba(255,255,255,0.1);
+  padding:15px;
+  border-radius:15px;
+}
+h2 { margin-top:0 }
+textarea {
+  width:100%;
+  height:90px;
+  border-radius:10px;
+  border:none;
+  padding:10px;
+  font-size:16px;
+  resize:none;
+}
+button {
+  margin-top:10px;
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:10px;
+  background:#ff4757;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+.chatlog {
+  background:white;
+  color:black;
+  height:150px;
+  overflow:auto;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:10px;
+  font-family:monospace;
+}
+.small {
+  font-size:12px;
+  opacity:0.8;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-<div class="panel">
-<h2>🧠 Ти пишеш нормално</h2>
-<div id="myChat" class="chatbox"></div>
-<textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
 
-<select id="modeSelect">
-<option value="garaga">Гарга</option>
-<option value="shadow">Сянка</option>
-<option value="hybrid">Хибрид 🔥</option>
-</select>
+  <!-- ЛЯВО: ТИ -->
+  <div class="box">
+    <h2>🧠 Ти пишеш нормално</h2>
+    <div id="chatNormal" class="chatlog"></div>
+    <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
+    <button onclick="sendMessage()">Изпрати ➜</button>
+  </div>
 
-<button onclick="sendMessage()">Изпрати ➜</button>
-<button onclick="clearChat()">🗑 Изчисти</button>
-</div>
+  <!-- ДЯСНО: КОД -->
+  <div class="box">
+    <h2>🔐 Кодиран текст</h2>
+    <div id="chatEncoded" class="chatlog"></div>
 
-<div class="panel">
-<h2>🔐 Кодиран текст</h2>
-<div id="encodedChat" class="chatbox"></div>
-<button onclick="copyLast()">📋 Копирай последното</button>
+    <h2>📥 Пейстни отговор (кодиран)</h2>
+    <textarea id="replyInput" placeholder="Пейстни кодирания отговор..."></textarea>
+    <button onclick="decodeReply()">Разкодирай ⬇</button>
 
-<h2>📥 Пейстни отговор (кодиран)</h2>
-<textarea id="replyInput"></textarea>
-<button onclick="decodeReply()">Разкодирай ⬇</button>
+    <h2>💬 Разкодирано</h2>
+    <div id="chatDecoded" class="chatlog"></div>
+  </div>
 
-<h2>💬 Разкодирано</h2>
-<div id="decodedChat" class="chatbox"></div>
-</div>
 </div>
 
 <script>
-const noiseWords = ["зорк","мракс","тулба","грахт","сенк","вордекс"];
-
-const bigDictionary = {
-"здравей":"глувек","как":"тром","си":"вард","приятел":"мурка",
-"пари":"жълтици","работа":"мисия","план":"схемора","тайна":"мъгла",
-"чат":"криптор","съобщение":"деклара","да":"трола","не":"вакра",
-"отивам":"потеглям","идвам":"прииждам","чао":"залез","добре":"стабилно",
-"бързо":"светкавично","чакай":"задръж","тук":"позиция","там":"зона"
+let baseDictionary = {
+  "здравей":"глувек",
+  "как":"тре",
+  "си":"мулча",
+  "приятел":"дружко",
+  "да":"трола",
+  "видим":"крамуля",
+  "пробваме":"зортек",
+  "план":"мряк",
+  "работа":"чомба",
+  "тайно":"шуш",
+  "пари":"риби",
+  "проблем":"тулба",
+  "жена":"кака",
+  "мъж":"батка"
 };
 
-function randomNoise(){
-return Math.random()<0.3 ? noiseWords[Math.floor(Math.random()*noiseWords.length)] : "";
+let noiseWords = ["шляп","мряк","зорт","бумка","тряс","пляс","вжж","пльок"];
+
+function shuffleWord(word){
+  if(word.length < 4) return word;
+  let mid = word.slice(1,-1).split('').sort(()=>Math.random()-0.5).join('');
+  return word[0] + mid + word[word.length-1];
 }
 
-function scramble(word){
-if(word.length<4) return word;
-let mid = word.slice(1,-1).split("").sort(()=>Math.random()-0.5).join("");
-return word[0]+mid+word[word.length-1];
+function addNoise(){
+  return Math.random() < 0.3 ? noiseWords[Math.floor(Math.random()*noiseWords.length)] + " " : "";
 }
 
-function encodeWord(word){
-let clean = word.toLowerCase();
-let base = bigDictionary[clean] || scramble(clean);
-if(Math.random()<0.2) base += Math.floor(Math.random()*9);
-return base;
+function mutateDictionary(){
+  for(let key in baseDictionary){
+    if(Math.random() < 0.2){
+      baseDictionary[key] = shuffleWord(baseDictionary[key]);
+    }
+  }
 }
 
-function encode(text,mode){
-let words = text.split(" ");
-let result = [];
-for(let w of words){
-if(mode==="hybrid"){
-result.push(encodeWord(w));
-let noise = randomNoise();
-if(noise) result.push(noise);
-}else{
-result.push(bigDictionary[w.toLowerCase()] || w);
-}
-}
-return result.join(" ");
-}
-
-function autoDecodeWord(word){
-let reversed = Object.fromEntries(Object.entries(bigDictionary).map(([k,v])=>[v,k]));
-let clean = word.replace(/[0-9]/g,"");
-if(reversed[clean]) return reversed[clean];
-return word;
+function encode(text){
+  mutateDictionary(); // 🧬 жив речник
+  return text.split(" ").map(word=>{
+    let clean = word.toLowerCase();
+    if(baseDictionary[clean]){
+      return addNoise() + shuffleWord(baseDictionary[clean]);
+    }
+    return shuffleWord(word);
+  }).join(" ");
 }
 
 function decode(text){
-let words = text.split(" ");
-let result = words.map(w=>autoDecodeWord(w)).filter(w=>!noiseWords.includes(w));
-return result.join(" ");
+  let reverse = {};
+  for(let key in baseDictionary){
+    reverse[baseDictionary[key]] = key;
+  }
+
+  return text.split(" ").map(word=>{
+    let clean = word.toLowerCase();
+    clean = clean.replace(/[^а-я]/gi,"");
+    if(reverse[clean]) return reverse[clean];
+    return word;
+  }).join(" ");
 }
 
 function sendMessage(){
-let text=inputText.value.trim();
-if(!text) return;
-let mode=modeSelect.value;
-let encoded=encode(text,mode);
-myChat.innerHTML+="🧑: "+text+"<br>";
-encodedChat.innerHTML+="🔒: "+encoded+"<br>";
-inputText.value="";
-saveHistory();scrollAll();
+  let input = document.getElementById("inputText");
+  let normal = input.value;
+  if(!normal.trim()) return;
+
+  let encoded = encode(normal);
+
+  document.getElementById("chatNormal").innerHTML += "🙂 " + normal + "<br>";
+  document.getElementById("chatEncoded").innerHTML += "🔐 " + encoded + "<br>";
+
+  input.value="";
 }
 
 function decodeReply(){
-let text=replyInput.value.trim();
-if(!text) return;
-let decoded=decode(text);
-decodedChat.innerHTML+="🤖: "+decoded+"<br>";
-replyInput.value="";
-saveHistory();scrollAll();
-}
+  let coded = document.getElementById("replyInput").value;
+  let decoded = decode(coded);
 
-function copyLast(){
-let lines=encodedChat.innerText.trim().split("\n");
-navigator.clipboard.writeText(lines.pop().replace("🔒: ",""));
-alert("Копирано");
+  document.getElementById("chatDecoded").innerHTML += "🤖 " + decoded + "<br>";
+  document.getElementById("replyInput").value="";
 }
-
-function scrollAll(){
-["myChat","encodedChat","decodedChat"].forEach(id=>{
-let el=document.getElementById(id);el.scrollTop=el.scrollHeight;
-});
-}
-
-function saveHistory(){
-localStorage.setItem("myChat",myChat.innerHTML);
-localStorage.setItem("encodedChat",encodedChat.innerHTML);
-localStorage.setItem("decodedChat",decodedChat.innerHTML);
-}
-
-function loadHistory(){
-myChat.innerHTML=localStorage.getItem("myChat")||"";
-encodedChat.innerHTML=localStorage.getItem("encodedChat")||"";
-decodedChat.innerHTML=localStorage.getItem("decodedChat")||"";
-}
-
-function clearChat(){
-if(confirm("Сигурен ли си?")){
-localStorage.clear();location.reload();
-}
-}
-
-loadHistory();
 </script>
+
 </body>
 </html>
