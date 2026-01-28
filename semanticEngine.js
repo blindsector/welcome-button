@@ -1,75 +1,71 @@
-import { nounMap, verbMap } from "./semanticDictionary.js";
-import { adjMap, phraseMap, variationMap } from "./semanticExtras.js";
+import { nounMap, verbMap } from "./semanticExtras.js";
 
-// =======================
-// 🔁 ОБРАТНИ РЕЧНИЦИ
-// =======================
-const reverse = obj => Object.fromEntries(Object.entries(obj).map(([k,v])=>[v,k]));
+// обръщаме речниците за разкодиране
+const reverseNounMap = Object.fromEntries(
+  Object.entries(nounMap).map(([k, v]) => [v, k])
+);
 
-const reverseNounMap = reverse(nounMap);
-const reverseVerbMap = reverse(verbMap);
-const reverseAdjMap  = reverse(adjMap);
-const reversePhraseMap = reverse(phraseMap);
+const reverseVerbMap = Object.fromEntries(
+  Object.entries(verbMap).map(([k, v]) => [v, k])
+);
 
-const reverseVariationMap = {};
-for (const key in variationMap) {
-  variationMap[key].forEach(v => reverseVariationMap[v] = key);
+// запазва главна буква
+function preserveCase(original, transformed) {
+  if (original[0] === original[0].toUpperCase()) {
+    return transformed.charAt(0).toUpperCase() + transformed.slice(1);
+  }
+  return transformed;
+}
+
+// маха пунктуация за проверка
+function cleanWord(word) {
+  return word.toLowerCase().replace(/[.,!?]/g, "");
+}
+
+// връща пунктуацията
+function getPunctuation(word) {
+  const match = word.match(/[.,!?]+$/);
+  return match ? match[0] : "";
 }
 
 // =======================
-// 🎲 RANDOM HELPER
-// =======================
-function getRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// =======================
-// 🔐 ENCODE
+// 🔐 КОДИРАНЕ
 // =======================
 export function encodeText(text) {
-  let result = text.toLowerCase();
+  return text
+    .split(" ")
+    .map(word => {
+      const clean = cleanWord(word);
+      const punct = getPunctuation(word);
 
-  // Първо цели фрази
-  for (const phrase in phraseMap) {
-    const regex = new RegExp("\\b" + phrase + "\\b", "gi");
-    result = result.replace(regex, phraseMap[phrase]);
-  }
+      let replaced =
+        nounMap[clean] ||
+        verbMap[clean] ||
+        clean;
 
-  const words = result.split(/(\s+|[,.!?])/g);
-
-  return words.map(word => {
-    const clean = word.toLowerCase();
-
-    if (variationMap[clean]) return getRandom(variationMap[clean]);
-    if (nounMap[clean]) return nounMap[clean];
-    if (verbMap[clean]) return verbMap[clean];
-    if (adjMap[clean]) return adjMap[clean];
-
-    return word;
-  }).join("");
+      replaced = preserveCase(word, replaced);
+      return replaced + punct;
+    })
+    .join(" ");
 }
 
 // =======================
-// 🔓 DECODE
+// 🔓 РАЗКОДИРАНЕ
 // =======================
 export function decodeText(text) {
-  let result = text.toLowerCase();
+  return text
+    .split(" ")
+    .map(word => {
+      const clean = cleanWord(word);
+      const punct = getPunctuation(word);
 
-  for (const phrase in reversePhraseMap) {
-    const regex = new RegExp("\\b" + phrase + "\\b", "gi");
-    result = result.replace(regex, reversePhraseMap[phrase]);
-  }
+      let replaced =
+        reverseNounMap[clean] ||
+        reverseVerbMap[clean] ||
+        clean;
 
-  const words = result.split(/(\s+|[,.!?])/g);
-
-  return words.map(word => {
-    const clean = word.toLowerCase();
-
-    if (reverseVariationMap[clean]) return reverseVariationMap[clean];
-    if (reverseNounMap[clean]) return reverseNounMap[clean];
-    if (reverseVerbMap[clean]) return reverseVerbMap[clean];
-    if (reverseAdjMap[clean]) return reverseAdjMap[clean];
-
-    return word;
-  }).join("");
+      replaced = preserveCase(word, replaced);
+      return replaced + punct;
+    })
+    .join(" ");
 }
