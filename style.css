@@ -1,0 +1,49 @@
+body {
+  background: #1a1a1a;
+  color: #e6e6e6;
+  font-family: Consolas, monospace;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #9be564;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  height: 300px;
+  background: #0f0f0f;
+  color: #9be564;
+  border: 1px solid #333;
+  padding: 10px;
+  resize: none;
+}
+
+.buttons {
+  text-align: center;
+  margin-top: 15px;
+}
+
+button {
+  background: #333;
+  color: #9be564;
+  border: 1px solid #555;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
