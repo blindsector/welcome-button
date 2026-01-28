@@ -1,5 +1,52 @@
-import { encodeText, decodeText } from "./semanticEngine.js"
+// ====== РЕЧНИК ======
+const synonyms = {
+  "имам": "притежавам",
+  "нямам": "изгубил съм",
+  "отивам": "скитам",
+  "отиваме": "скитаме",
+  "нося": "мъкна",
+  "взимам": "прибирам",
+  "давам": "подавам",
+  "правя": "майсторя",
+  "говоря": "мърморя",
+  "казвам": "изричам",
+  "виждам": "зървам",
+  "чакам": "дебна",
+  "трябва": "налага се",
+  "искам": "копнея",
+  "среща": "сбор",
+  "срещата": "сбора",
+  "пари": "капачки",
+  "оръжие": "гърмялка",
+  "кола": "бричка",
+  "колата": "бричката",
+  "храна": "дажба",
+  "вода": "течност",
+  "приятел": "оцеляващ",
+  "враг": "мутант"
+}
 
+// ====== КОДИРАНЕ ======
+function encodeText(text) {
+  return text.split(" ").map(word => {
+    const clean = word.toLowerCase()
+    return synonyms[clean] || word
+  }).join(" ")
+}
+
+// ====== РАЗКОДИРАНЕ ======
+function decodeText(text) {
+  const reversed = Object.fromEntries(
+    Object.entries(synonyms).map(([k,v]) => [v, k])
+  )
+
+  return text.split(" ").map(word => {
+    const clean = word.toLowerCase()
+    return reversed[clean] || word
+  }).join(" ")
+}
+
+// ====== CHAT ЛОГИКА ======
 const inputText = document.getElementById("inputText")
 const replyInput = document.getElementById("replyInput")
 const chatBox = document.getElementById("chatBox")
@@ -54,6 +101,7 @@ document.getElementById("copyBtn").onclick = () => {
   navigator.clipboard.writeText(last.text.replace("🔒 Кодирано: ", ""))
 }
 
+// ENTER ПОДДРЪЖКА
 inputText.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault()
