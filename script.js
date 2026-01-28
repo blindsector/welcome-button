@@ -40,4 +40,9 @@ inputText.addEventListener("keydown", (e) => {
         e.preventDefault();
         sendMessage();
     }
+    inputBox.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // спира нов ред
+        handleEncode();     // праща съобщението
+    }
 });
