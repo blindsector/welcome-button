@@ -51,9 +51,11 @@ window.decodeMessage = function () {
 };
 
 /* ===== ENTER SEND ===== */
-inputText.addEventListener("keydown", function (e) {
+inputText.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
     }
+});
+
 });
