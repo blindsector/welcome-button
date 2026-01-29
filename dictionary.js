@@ -81,10 +81,7 @@ const dictionary = {
 };
 
 
-// 🔁 Автоматично създаваме обратен речник (за разкодиране)
-const reverseDictionary = {};
-
-for (const key in dictionary) {
-  reverseDictionary[dictionary[key]] = key;
-}
-
+const dictionary = { ... };
+const reverseDictionary = Object.fromEntries(
+  Object.entries(dictionary).map(([k,v]) => [v,k])
+);
