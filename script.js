@@ -3,44 +3,39 @@ const sendBtn = document.getElementById("sendBtn");
 const chatMessages = document.getElementById("chatMessages");
 const encodedMessages = document.getElementById("encodedMessages");
 
-let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
-let encodedHistory = JSON.parse(localStorage.getItem("encodedHistory")) || [];
-
 sendBtn.onclick = sendMessage;
 
+// Разделя текст, но пази интервали и пунктуация
+function smartSplit(text) {
+    return text.split(/(\s+|[,.!?])/);
+}
+
+function preserveCase(original, replacement) {
+    if (original[0] === original[0]?.toUpperCase()) {
+        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    }
+    return replacement;
+}
+
 function encodeText(text) {
-    return text.split(/(\s+|[,.!?])/).map(token => {
+    return smartSplit(text).map(token => {
         const lower = token.toLowerCase();
-        if (dictionary[lower]) {
-            // Запазва главна буква
-            if (token[0] === token[0]?.toUpperCase()) {
-                return dictionary[lower].charAt(0).toUpperCase() + dictionary[lower].slice(1);
-            }
-            return dictionary[lower];
+        if (baseDictionary[lower]) {
+            return preserveCase(token, baseDictionary[lower]);
         }
         return token;
     }).join("");
 }
-
 
 function decodeText(text) {
-    const reverseDict = Object.fromEntries(
-        Object.entries(dictionary).map(([k, v]) => [v.toLowerCase(), k])
-    );
-
-    return text.split(/(\s+|[,.!?])/).map(token => {
+    return smartSplit(text).map(token => {
         const lower = token.toLowerCase();
-        if (reverseDict[lower]) {
-            if (token[0] === token[0]?.toUpperCase()) {
-                const word = reverseDict[lower];
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            }
-            return reverseDict[lower];
+        if (reverseDictionary[lower]) {
+            return preserveCase(token, reverseDictionary[lower]);
         }
         return token;
     }).join("");
 }
-
 
 function sendMessage() {
     const text = messageInput.value.trim();
@@ -50,10 +45,7 @@ function sendMessage() {
     addEncoded(encoded);
     addChatBubble(text, "me");
 
-    encodedHistory.push(encoded);
-    chatHistory.push({ sender: "me", text });
-
-saveMessages();
+    saveMessages();
     messageInput.value = "";
 }
 
@@ -64,9 +56,7 @@ function decodeIncoming() {
     const decoded = decodeText(code);
     addChatBubble(decoded, "her");
 
-    chatHistory.push({ sender: "her", text: decoded });
-saveMessages();
-
+    saveMessages();
     document.getElementById("incomingCode").value = "";
 }
 
@@ -99,30 +89,20 @@ function addEncoded(text) {
 }
 
 function saveMessages() {
-    localStorage.setItem("shadow_encoded", document.getElementById("encodedMessages").innerHTML);
-    localStorage.setItem("shadow_decoded", document.getElementById("chatMessages").innerHTML);
+    localStorage.setItem("shadow_encoded", encodedMessages.innerHTML);
+    localStorage.setItem("shadow_decoded", chatMessages.innerHTML);
 }
 
 function loadMessages() {
-    document.getElementById("encodedMessages").innerHTML = localStorage.getItem("shadow_encoded") || "";
-    document.getElementById("chatMessages").innerHTML = localStorage.getItem("shadow_decoded") || "";
+    encodedMessages.innerHTML = localStorage.getItem("shadow_encoded") || "";
+    chatMessages.innerHTML = localStorage.getItem("shadow_decoded") || "";
 }
 
-window.addEventListener("load", loadMessages);
-
 function clearAll() {
-    // Ляво – кодирани съобщения
-    const encodedBox = document.getElementById("encodedMessages");
-
-    // Дясно – разкодирани съобщения
-    const chatBox = document.getElementById("chatMessages");
-
-    // Чистим екрана
-    encodedBox.innerHTML = "";
-    chatBox.innerHTML = "";
-
-    // Чистим запазеното в паметта
+    encodedMessages.innerHTML = "";
+    chatMessages.innerHTML = "";
     localStorage.removeItem("shadow_encoded");
     localStorage.removeItem("shadow_decoded");
 }
 
+window.addEventListener("load", loadMessages);
