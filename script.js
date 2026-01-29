@@ -73,15 +73,18 @@ function addEncoded(text) {
     encodedMessages.appendChild(div);
 }
 
-function saveData() {
-    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-    localStorage.setItem("encodedHistory", JSON.stringify(encodedHistory));
+function saveMessages() {
+    localStorage.setItem("shadow_encoded", document.getElementById("encodedMessages").innerHTML);
+    localStorage.setItem("shadow_decoded", document.getElementById("chatMessages").innerHTML);
 }
 
-function loadData() {
-    chatHistory.forEach(msg => addChatBubble(msg.text, msg.sender));
-    encodedHistory.forEach(code => addEncoded(code));
+function loadMessages() {
+    document.getElementById("encodedMessages").innerHTML = localStorage.getItem("shadow_encoded") || "";
+    document.getElementById("chatMessages").innerHTML = localStorage.getItem("shadow_decoded") || "";
 }
+
+window.addEventListener("load", loadMessages);
+
 function clearAll() {
     // Ляво – кодирани съобщения
     const encodedBox = document.getElementById("encodedMessages");
