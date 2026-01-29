@@ -138,3 +138,35 @@ textarea {
 .message.her .message-label {
     left: 10px;
 }
+.chat-bubble {
+    max-width: 60%;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.me {
+    background: #2b6cff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+    text-align: right;
+}
+
+.her {
+    background: #2a2f3a;
+    color: #e5e5e5;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+    text-align: left;
+}
+
+.sender-label {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-bottom: 3px;
+}
