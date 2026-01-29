@@ -8,50 +8,57 @@
 </head>
 <body>
 
-<div id="loginScreen" class="login-screen">
-    <div class="login-box">
-        <h2>Shadow Chat Login</h2>
-        <input type="password" id="passwordInput" placeholder="Парола">
+    <!-- 🔐 LOGIN SCREEN -->
+    <div id="loginScreen" class="login-screen">
+        <h2>Shadow Chat Вход</h2>
+        <input type="password" id="passwordInput" placeholder="Парола" />
         <button id="loginBtn">Вход</button>
-        <p id="loginError"></p>
     </div>
-</div>
 
-<div id="chatApp" class="hidden">
-    <header>
-        <h1>Shadow Chat</h1>
-        <div class="top-buttons">
-            <button id="exportBtn">Export</button>
-            <button id="clearBtn">Clear</button>
-            <button id="logoutBtn">Logout</button>
+    <!-- 💬 APP SCREEN (скрито докато не се логнеш) -->
+    <div id="appScreen" style="display:none;">
+
+        <header class="top-bar">
+            <h1>Shadow Chat</h1>
+            <div class="top-buttons">
+                <button id="exportBtn">Export</button>
+                <button id="clearBtn">Clear</button>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <div class="main-container">
+
+            <!-- 🔐 КОДИРАНО -->
+            <div class="panel left-panel">
+                <h2>Кодирано (за пращане)</h2>
+                <div id="encodedOutput"></div>
+            </div>
+
+            <!-- 💬 РАЗКОДИРАН ЧАТ -->
+            <div class="panel right-panel">
+                <h2>Разкодирано (четим чат)</h2>
+                <div id="chatOutput" class="chat-output"></div>
+            </div>
+
         </div>
-    </header>
 
-    <div class="chat-container">
-        <div class="chat-column">
-            <h3>Кодирано (за пращане)</h3>
-            <div id="encodedMessages" class="messages"></div>
+        <!-- ⬇️ ВХОДЯЩ КОД ЗА РАЗКОДИРАНЕ -->
+        <div class="incoming-bar">
+            <input type="text" id="incomingCodeInput" placeholder="Постави получен код тук..." />
+            <button id="decodeIncomingBtn">Разкодирай входящо</button>
         </div>
 
-        <div class="chat-column">
-            <h3>Разкодирано (четим чат)</h3>
-            <div id="decodedMessages" class="messages chat-style"></div>
+        <!-- ✍️ ПИСАНЕ НА СЪОБЩЕНИЕ -->
+        <div class="input-bar">
+            <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
+            <button id="sendBtn">➤</button>
         </div>
+
     </div>
 
-    <div class="incoming-box">
-        <textarea id="incomingInput" placeholder="Постави получен код тук..."></textarea>
-        <button id="decodeIncomingBtn">Разкодирай входящо</button>
-    </div>
-
-    <div class="input-area">
-        <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
-        <button id="sendBtn">➤</button>
-    </div>
-</div>
-
-<script src="dictionary.js"></script>
-<script src="auth.js"></script>
-<script src="script.js"></script>
+    <script src="dictionary.js"></script>
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
