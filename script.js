@@ -1,7 +1,8 @@
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
-const chatMessages = document.getElementById("chatMessages");
 const encodedMessages = document.getElementById("encodedMessages");
+const chatMessages = document.getElementById("chatMessages");
+
 
 let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
 let encodedHistory = JSON.parse(localStorage.getItem("encodedHistory")) || [];
