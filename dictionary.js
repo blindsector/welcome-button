@@ -1,4 +1,5 @@
-export const dictionary = {
+const dictionary = {
+
 
   // ДВИЖЕНИЕ
   "отивам": "лузгам",
@@ -86,3 +87,4 @@ export const dictionary = {
   "малко": "минимално гориво"
 
 };
+window.dictionary = dictionary;
