@@ -37,25 +37,35 @@ function decodeText(text) {
         let current = tokens[i];
         let next = tokens[i + 1] || "";
 
-        // Проверка за фраза от 2 думи
         const twoWord = (current + " " + next).toLowerCase().trim();
 
+        // 1️⃣ Проверка за фраза
         if (reverseDictionary[twoWord]) {
-            result.push(preserveCase(current, reverseDictionary[twoWord]));
-            i++; // прескачаме следващата дума САМО ако има фраза
+            result.push(matchCase(current, reverseDictionary[twoWord]));
+            i++; // прескачаме втората дума само ако има съвпадение
             continue;
         }
 
-        // Иначе декодираме само текущата дума
-        const lower = current.toLowerCase();
-        if (reverseDictionary[lower]) {
-            result.push(preserveCase(current, reverseDictionary[lower]));
+        // 2️⃣ Проверка за една дума
+        const oneWord = current.toLowerCase();
+        if (reverseDictionary[oneWord]) {
+            result.push(matchCase(current, reverseDictionary[oneWord]));
         } else {
             result.push(current);
         }
     }
 
     return result.join(" ");
+}
+
+function matchCase(original, replacement) {
+    if (original === original.toUpperCase()) {
+        return replacement.toUpperCase();
+    }
+    if (original[0] === original[0].toUpperCase()) {
+        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    }
+    return replacement;
 }
 
 
