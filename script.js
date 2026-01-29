@@ -7,7 +7,7 @@ sendBtn.onclick = sendMessage;
 
 /* ---------------- SMART SPLIT ---------------- */
 function smartSplit(text) {
-    return text.split(/(\s+|[,.!?])/).filter(t => t !== "");
+    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
 }
 
 function preserveCase(original, replacement) {
@@ -37,16 +37,14 @@ function decodeText(text) {
         let current = tokens[i];
         let next = tokens[i + 1] || "";
 
-        const twoWord = (current + " " + next).toLowerCase().trim();
+        const twoWord = (current + " " + next).toLowerCase();
 
-        // 1️⃣ Проверка за фраза
         if (reverseDictionary[twoWord]) {
             result.push(matchCase(current, reverseDictionary[twoWord]));
-            i++; // прескачаме втората дума само ако има съвпадение
+            i++;
             continue;
         }
 
-        // 2️⃣ Проверка за една дума
         const oneWord = current.toLowerCase();
         if (reverseDictionary[oneWord]) {
             result.push(matchCase(current, reverseDictionary[oneWord]));
@@ -67,7 +65,6 @@ function matchCase(original, replacement) {
     }
     return replacement;
 }
-
 
 /* ---------------- SEND MESSAGE ---------------- */
 function sendMessage() {
@@ -93,6 +90,8 @@ function decodeIncoming() {
     saveMessages();
     document.getElementById("incomingCode").value = "";
 }
+
+window.decodeIncoming = decodeIncoming; // 🔥 FIX
 
 /* ---------------- CHAT BUBBLE ---------------- */
 function addChatBubble(text, sender) {
@@ -152,3 +151,4 @@ function clearAll() {
     localStorage.removeItem("shadowChat_messages");
     localStorage.removeItem("shadowChat_encoded");
 }
+window.clearAll = clearAll;
