@@ -13,9 +13,22 @@ function encodeText(text) {
 }
 
 function decodeText(text) {
-    const reverseDict = Object.fromEntries(Object.entries(dictionary).map(([k,v]) => [v,k]));
-    return text.split(" ").map(word => reverseDict[word] || word).join(" ");
+  let decoded = text;
+
+  // Подреждаме фразите по дължина (по-дългите първо)
+  const phrases = Object.keys(reverseDictionary).sort((a, b) => b.length - a.length);
+
+  phrases.forEach(phrase => {
+    const original = reverseDictionary[phrase];
+
+    // правим case-insensitive замяна
+    const regex = new RegExp(phrase, "gi");
+    decoded = decoded.replace(regex, original);
+  });
+
+  return decoded;
 }
+
 
 function sendMessage() {
     const text = messageInput.value.trim();
