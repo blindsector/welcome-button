@@ -25,8 +25,9 @@ function encodeText(text) {
             return preserveCase(token, baseDictionary[lower]);
         }
         return token;
-    }).join("");
+    }).join(" "); // ← ВАЖНО
 }
+
 
 /* ---------------- DECODE ---------------- */
 function decodeText(text) {
@@ -37,7 +38,7 @@ function decodeText(text) {
         let current = tokens[i];
         let next = tokens[i + 1] || "";
 
-        const twoWord = (current + next).toLowerCase().replace(/\s+/g, " ").trim();
+        const twoWord = (current + " " + next).toLowerCase().trim();
 
         if (reverseDictionary[twoWord]) {
             result.push(preserveCase(current, reverseDictionary[twoWord]));
@@ -52,6 +53,10 @@ function decodeText(text) {
             result.push(current);
         }
     }
+
+    return result.join(" "); // ← ВАЖНО
+}
+
 
     return result.join("");
 }
