@@ -37,14 +37,16 @@ function decodeText(text) {
         let current = tokens[i];
         let next = tokens[i + 1] || "";
 
+        // Проверка за фраза от 2 думи
         const twoWord = (current + " " + next).toLowerCase().trim();
 
         if (reverseDictionary[twoWord]) {
             result.push(preserveCase(current, reverseDictionary[twoWord]));
-            i++;
+            i++; // прескачаме следващата дума САМО ако има фраза
             continue;
         }
 
+        // Иначе декодираме само текущата дума
         const lower = current.toLowerCase();
         if (reverseDictionary[lower]) {
             result.push(preserveCase(current, reverseDictionary[lower]));
@@ -55,6 +57,7 @@ function decodeText(text) {
 
     return result.join(" ");
 }
+
 
 /* ---------------- SEND MESSAGE ---------------- */
 function sendMessage() {
