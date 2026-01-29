@@ -16,20 +16,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return text.split(" ").map(decodeWord).join(" ");
     }
 
-    function addMessage(container, text, isEncoded = false) {
+    function addEncodedMessage(text) {
         const msgDiv = document.createElement("div");
         msgDiv.className = "message";
         msgDiv.textContent = text;
 
-        if (isEncoded) {
-            const copyBtn = document.createElement("button");
-            copyBtn.textContent = "Copy";
-            copyBtn.className = "copy-btn";
-            copyBtn.onclick = () => navigator.clipboard.writeText(text);
-            msgDiv.appendChild(copyBtn);
-        }
+        const copyBtn = document.createElement("button");
+        copyBtn.textContent = "Copy";
+        copyBtn.className = "copy-btn";
+        copyBtn.onclick = () => navigator.clipboard.writeText(text);
+        msgDiv.appendChild(copyBtn);
 
-        container.appendChild(msgDiv);
+        encodedMessages.appendChild(msgDiv);
+    }
+
+    function addChatMessage(text, sender) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${sender}`;
+
+        const label = document.createElement("div");
+        label.className = "message-label";
+        label.textContent = sender === "me" ? "Аз" : "ТЯ";
+
+        msgDiv.textContent = text;
+        msgDiv.appendChild(label);
+
+        decodedMessages.appendChild(msgDiv);
+        decodedMessages.scrollTop = decodedMessages.scrollHeight;
     }
 
     sendBtn.addEventListener("click", () => {
@@ -37,10 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!text) return;
 
         const encoded = encodeMessage(text);
-        const decoded = decodeMessage(encoded);
 
-        addMessage(encodedMessages, encoded, true);
-        addMessage(decodedMessages, decoded);
+        addEncodedMessage(encoded);
+        addChatMessage(text, "me");
 
         messageInput.value = "";
     });
@@ -50,7 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!incoming) return;
 
         const decoded = decodeMessage(incoming);
-        addMessage(decodedMessages, decoded);
+        addChatMessage(decoded, "her");
+
         incomingInput.value = "";
     });
 
