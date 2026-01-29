@@ -18,15 +18,36 @@ function preserveCase(original, replacement) {
 }
 
 /* ---------------- ENCODE ---------------- */
-function encodeText(text) {
-    return smartSplit(text).map(token => {
-        const lower = token.toLowerCase();
-        if (baseDictionary[lower]) {
-            return preserveCase(token, baseDictionary[lower]);
-        }
-        return token;
-    }).join(" ");
+function encodeText(text, dictionary) {
+    return text
+        .split(/\s+/)
+        .map(originalWord => {
+
+            // пазим пунктуация отпред и отзад
+            const match = originalWord.match(/^([^\p{L}]*)([\p{L}]+)([^\p{L}]*)$/u);
+
+            if (!match) return originalWord;
+
+            let [, prefix, word, suffix] = match;
+
+            const lower = word.toLowerCase();
+
+            if (dictionary[lower]) {
+                let replacement = dictionary[lower];
+
+                // ако думата е била с главна буква
+                if (word[0] === word[0].toUpperCase()) {
+                    replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+                }
+
+                return prefix + replacement + suffix;
+            }
+
+            return originalWord;
+        })
+        .join(" ");
 }
+
 
 /* ---------------- DECODE ---------------- */
 function decodeText(text) {
