@@ -81,7 +81,7 @@ const dictionary = {
 };
 
 
-const dictionary = { ... };
+
 const reverseDictionary = Object.fromEntries(
   Object.entries(dictionary).map(([k,v]) => [v,k])
 );
