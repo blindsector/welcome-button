@@ -5,6 +5,7 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
+/* ---------------- SMART SPLIT ---------------- */
 function smartSplit(text) {
     return text.split(/(\s+|[,.!?])/).filter(t => t !== "");
 }
@@ -16,6 +17,7 @@ function preserveCase(original, replacement) {
     return replacement;
 }
 
+/* ---------------- ENCODE ---------------- */
 function encodeText(text) {
     return smartSplit(text).map(token => {
         const lower = token.toLowerCase();
@@ -26,6 +28,7 @@ function encodeText(text) {
     }).join("");
 }
 
+/* ---------------- DECODE ---------------- */
 function decodeText(text) {
     const tokens = smartSplit(text);
     let result = [];
@@ -53,9 +56,10 @@ function decodeText(text) {
     return result.join("");
 }
 
+/* ---------------- SEND MESSAGE ---------------- */
 function sendMessage() {
     const text = messageInput.value.trim();
-    if (text === "") return;
+    if (!text) return;
 
     const encoded = encodeText(text);
     addEncoded(encoded);
@@ -65,9 +69,10 @@ function sendMessage() {
     messageInput.value = "";
 }
 
+/* ---------------- DECODE INCOMING ---------------- */
 function decodeIncoming() {
     const code = document.getElementById("incomingCode").value.trim();
-    if (code === "") return;
+    if (!code) return;
 
     const decoded = decodeText(code);
     addChatBubble(decoded, "her");
@@ -76,6 +81,7 @@ function decodeIncoming() {
     document.getElementById("incomingCode").value = "";
 }
 
+/* ---------------- CHAT BUBBLE ---------------- */
 function addChatBubble(text, sender) {
     const bubble = document.createElement("div");
     bubble.className = "bubble " + sender;
@@ -94,15 +100,26 @@ function addChatBubble(text, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+/* ---------------- ENCODED MESSAGE + COPY BUTTON ---------------- */
 function addEncoded(text) {
     const div = document.createElement("div");
     div.className = "encodedLine";
-    div.textContent = text;
+
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Copy";
+    btn.onclick = () => navigator.clipboard.writeText(text);
+
+    div.appendChild(span);
+    div.appendChild(btn);
     encodedMessages.appendChild(div);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
 }
 
+/* ---------------- SAVE / LOAD ---------------- */
 function saveMessages() {
     localStorage.setItem("shadowChat_messages", chatMessages.innerHTML);
     localStorage.setItem("shadowChat_encoded", encodedMessages.innerHTML);
@@ -113,4 +130,12 @@ function loadMessages() {
     encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
 }
 
-loadMessages();
+window.addEventListener("load", loadMessages);
+
+/* ---------------- CLEAR BUTTON ---------------- */
+function clearAll() {
+    chatMessages.innerHTML = "";
+    encodedMessages.innerHTML = "";
+    localStorage.removeItem("shadowChat_messages");
+    localStorage.removeItem("shadowChat_encoded");
+}
