@@ -1,28 +1,49 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8" />
-    <title>Wasteland Semantic Chat</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <h1 class="title">☢️ Wasteland Semantic Chat</h1>
+<div id="loginScreen" class="login-screen">
+  <h2>🔒 Вход</h2>
+  <input type="password" id="passwordInput" placeholder="Парола">
+  <button onclick="login()">Влез</button>
+  <p id="loginError"></p>
+</div>
 
-    <div id="chatBox" class="chat-box"></div>
+<div id="app" class="hidden">
+  <header>
+    <h1>☢ Shadow Chat</h1>
+    <div>
+      <button onclick="exportChat()">📄 Export</button>
+      <button onclick="clearChat()">🧹 Clear</button>
+      <button onclick="logout()">🔓 Logout</button>
+    </div>
+  </header>
 
-    <div class="input-row">
-        <textarea id="inputText" placeholder="Напиши съобщение..."></textarea>
-        <button onclick="sendMessage()">Кодирай</button>
-        <button onclick="copyLastCode()">Копирай код</button>
+  <div class="chat-container">
+    <div class="panel">
+      <h3>Кодирано (за пращане)</h3>
+      <div id="encodedChat" class="chat-box"></div>
+      <div class="input-area">
+        <textarea id="userInput" placeholder="Пиши тук..."></textarea>
+        <button id="sendBtn">➤</button>
+      </div>
     </div>
 
-    <div class="decode-row">
-        <textarea id="encodedReply" placeholder="Постави кодирано съобщение..."></textarea>
-        <button onclick="decodeMessage()">Разкодирай</button>
+    <div class="panel">
+      <h3>Разкодирано (четим чат)</h3>
+      <div id="decodedChat" class="chat-box"></div>
     </div>
+  </div>
+</div>
 
-   <script type="module" src="script.js"></script>
-
+<script src="dictionary.js"></script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
