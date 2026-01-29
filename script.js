@@ -75,16 +75,17 @@ function addChatBubble(text, sender) {
 }
 
 function addEncoded(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
+  const div = document.createElement("div");
+  div.textContent = text;
 
-    const btn = document.createElement("button");
-    btn.textContent = "Copy";
-    btn.onclick = () => navigator.clipboard.writeText(text);
+  const btn = document.createElement("button");
+  btn.textContent = "Copy";
+  btn.onclick = () => navigator.clipboard.writeText(text);
 
-    div.appendChild(btn);
-    encodedMessages.appendChild(div);
+  div.appendChild(btn);
+  encodedMessages.appendChild(div);
 }
+
 
 function saveMessages() {
     localStorage.setItem("shadow_encoded", document.getElementById("encodedMessages").innerHTML);
