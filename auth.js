@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loginBtn.addEventListener("click", () => {
         if (passwordInput.value === PASSWORD) {
-            loginScreen.classList.add("hidden");
+            loginScreen.remove(); // маха го напълно
             chatApp.classList.remove("hidden");
         } else {
             loginError.textContent = "Грешна парола";
