@@ -82,5 +82,20 @@ function loadData() {
     chatHistory.forEach(msg => addChatBubble(msg.text, msg.sender));
     encodedHistory.forEach(code => addEncoded(code));
 }
+function clearAll() {
+    // Ляво – кодирани съобщения
+    const encodedBox = document.getElementById("encodedMessages");
+
+    // Дясно – разкодирани съобщения
+    const chatBox = document.getElementById("chatMessages");
+
+    // Чистим екрана
+    encodedBox.innerHTML = "";
+    chatBox.innerHTML = "";
+
+    // Чистим запазеното в паметта
+    localStorage.removeItem("shadow_encoded");
+    localStorage.removeItem("shadow_decoded");
+}
 
 loadData();
