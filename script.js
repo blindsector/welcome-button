@@ -5,9 +5,8 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
-// Разделя текст, но пази интервали и пунктуация
 function smartSplit(text) {
-    return text.split(/(\s+|[,.!?])/);
+    return text.split(/(\s+|[,.!?])/).filter(t => t !== "");
 }
 
 function preserveCase(original, replacement) {
@@ -28,18 +27,36 @@ function encodeText(text) {
 }
 
 function decodeText(text) {
-    return smartSplit(text).map(token => {
-        const lower = token.toLowerCase();
-        if (reverseDictionary[lower]) {
-            return preserveCase(token, reverseDictionary[lower]);
+    const tokens = smartSplit(text);
+    let result = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+        let current = tokens[i];
+        let next = tokens[i + 1] || "";
+
+        // Проверка за дву-думна фраза
+        const twoWord = (current + next).toLowerCase().replace(/\s+/g, " ").trim();
+
+        if (reverseDictionary[twoWord]) {
+            result.push(preserveCase(current, reverseDictionary[twoWord]));
+            i++; // прескачаме следващата дума
+            continue;
         }
-        return token;
-    }).join("");
+
+        const lower = current.toLowerCase();
+        if (reverseDictionary[lower]) {
+            result.push(preserveCase(current, reverseDictionary[lower]));
+        } else {
+            result.push(current);
+        }
+    }
+
+    return result.join("");
 }
 
 function sendMessage() {
     const text = messageInput.value.trim();
-    if (!text) return;
+    if (text === "") return;
 
     const encoded = encodeText(text);
     addEncoded(encoded);
@@ -51,7 +68,7 @@ function sendMessage() {
 
 function decodeIncoming() {
     const code = document.getElementById("incomingCode").value.trim();
-    if (!code) return;
+    if (code === "") return;
 
     const decoded = decodeText(code);
     addChatBubble(decoded, "her");
@@ -77,32 +94,4 @@ function addChatBubble(text, sender) {
 }
 
 function addEncoded(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-
-    const btn = document.createElement("button");
-    btn.textContent = "Copy";
-    btn.onclick = () => navigator.clipboard.writeText(text);
-
-    div.appendChild(btn);
-    encodedMessages.appendChild(div);
-}
-
-function saveMessages() {
-    localStorage.setItem("shadow_encoded", encodedMessages.innerHTML);
-    localStorage.setItem("shadow_decoded", chatMessages.innerHTML);
-}
-
-function loadMessages() {
-    encodedMessages.innerHTML = localStorage.getItem("shadow_encoded") || "";
-    chatMessages.innerHTML = localStorage.getItem("shadow_decoded") || "";
-}
-
-function clearAll() {
-    encodedMessages.innerHTML = "";
-    chatMessages.innerHTML = "";
-    localStorage.removeItem("shadow_encoded");
-    localStorage.removeItem("shadow_decoded");
-}
-
-window.addEventListener("load", loadMessages);
+    const div = document.cre
