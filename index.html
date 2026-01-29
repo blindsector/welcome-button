@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadow Chat</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <h2>Shadow Chat Login</h2>
+        <input type="password" id="passwordInput" placeholder="Парола">
+        <button id="loginBtn">Вход</button>
+        <p id="loginError"></p>
+    </div>
+</div>
+
+<div id="chatApp" class="hidden">
+    <header>
+        <h1>Shadow Chat</h1>
+        <div class="top-buttons">
+            <button id="exportBtn">Export</button>
+            <button id="clearBtn">Clear</button>
+            <button id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <div class="chat-column">
+            <h3>Кодирано (за пращане)</h3>
+            <div id="encodedMessages" class="messages"></div>
+        </div>
+
+        <div class="chat-column">
+            <h3>Разкодирано (четим чат)</h3>
+            <div id="decodedMessages" class="messages"></div>
+        </div>
+    </div>
+
+    <div class="incoming-box">
+        <textarea id="incomingInput" placeholder="Постави получен код тук..."></textarea>
+        <button id="decodeIncomingBtn">Разкодирай входящо</button>
+    </div>
+
+    <div class="input-area">
+        <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
+        <button id="sendBtn">➤</button>
+    </div>
+</div>
+
+<script src="dictionary.js"></script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
