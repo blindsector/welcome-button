@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f1115;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #151922;
+    border-bottom: 1px solid #222;
+}
+
+h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.top-buttons button {
+    margin-left: 8px;
+}
+
+.chat-container {
+    display: flex;
+    height: 55vh;
+}
+
+.chat-column {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message {
+    background: #1c2230;
+    padding: 8px;
+    border-radius: 6px;
+    position: relative;
+    font-size: 14px;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #2b3245;
+    border: none;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.input-area {
+    display: flex;
+    padding: 10px;
+    background: #151922;
+}
+
+textarea {
+    flex: 1;
+    resize: none;
+    border-radius: 6px;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+}
+
+#sendBtn {
+    margin-left: 10px;
+    width: 50px;
+    font-size: 18px;
+}
+
+.incoming-box {
+    padding: 10px;
+    background: #12161f;
+    border-top: 1px solid #222;
+}
+
+.login-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    background: #1c2230;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
