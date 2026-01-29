@@ -34,12 +34,11 @@ function decodeText(text) {
         let current = tokens[i];
         let next = tokens[i + 1] || "";
 
-        // Проверка за дву-думна фраза
         const twoWord = (current + next).toLowerCase().replace(/\s+/g, " ").trim();
 
         if (reverseDictionary[twoWord]) {
             result.push(preserveCase(current, reverseDictionary[twoWord]));
-            i++; // прескачаме следващата дума
+            i++;
             continue;
         }
 
@@ -91,7 +90,27 @@ function addChatBubble(text, sender) {
     bubble.appendChild(label);
     bubble.appendChild(msg);
     chatMessages.appendChild(bubble);
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function addEncoded(text) {
-    const div = document.cre
+    const div = document.createElement("div");
+    div.className = "encodedLine";
+    div.textContent = text;
+    encodedMessages.appendChild(div);
+
+    encodedMessages.scrollTop = encodedMessages.scrollHeight;
+}
+
+function saveMessages() {
+    localStorage.setItem("shadowChat_messages", chatMessages.innerHTML);
+    localStorage.setItem("shadowChat_encoded", encodedMessages.innerHTML);
+}
+
+function loadMessages() {
+    chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
+    encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
+}
+
+loadMessages();
