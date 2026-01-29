@@ -9,13 +9,38 @@ let encodedHistory = JSON.parse(localStorage.getItem("encodedHistory")) || [];
 sendBtn.onclick = sendMessage;
 
 function encodeText(text) {
-    return text.split(" ").map(word => dictionary[word.toLowerCase()] || word).join(" ");
+    return text.split(/(\s+|[,.!?])/).map(token => {
+        const lower = token.toLowerCase();
+        if (dictionary[lower]) {
+            // Запазва главна буква
+            if (token[0] === token[0]?.toUpperCase()) {
+                return dictionary[lower].charAt(0).toUpperCase() + dictionary[lower].slice(1);
+            }
+            return dictionary[lower];
+        }
+        return token;
+    }).join("");
 }
 
+
 function decodeText(text) {
-    const reverseDict = Object.fromEntries(Object.entries(dictionary).map(([k,v]) => [v,k]));
-    return text.split(" ").map(word => reverseDict[word] || word).join(" ");
+    const reverseDict = Object.fromEntries(
+        Object.entries(dictionary).map(([k, v]) => [v.toLowerCase(), k])
+    );
+
+    return text.split(/(\s+|[,.!?])/).map(token => {
+        const lower = token.toLowerCase();
+        if (reverseDict[lower]) {
+            if (token[0] === token[0]?.toUpperCase()) {
+                const word = reverseDict[lower];
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }
+            return reverseDict[lower];
+        }
+        return token;
+    }).join("");
 }
+
 
 function sendMessage() {
     const text = messageInput.value.trim();
@@ -28,7 +53,7 @@ function sendMessage() {
     encodedHistory.push(encoded);
     chatHistory.push({ sender: "me", text });
 
-    saveData();
+saveMessages();
     messageInput.value = "";
 }
 
@@ -40,7 +65,7 @@ function decodeIncoming() {
     addChatBubble(decoded, "her");
 
     chatHistory.push({ sender: "her", text: decoded });
-    saveData();
+saveMessages();
 
     document.getElementById("incomingCode").value = "";
 }
@@ -101,4 +126,3 @@ function clearAll() {
     localStorage.removeItem("shadow_decoded");
 }
 
-loadData();
