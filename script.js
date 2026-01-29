@@ -18,9 +18,26 @@ document.addEventListener("DOMContentLoaded", () => {
         return text.split(" ").map(encodeWord).join(" ");
     }
 
-    function decodeMessage(text) {
-        return text.split(" ").map(decodeWord).join(" ");
-    }
+  function addDecodedMessage(text, sender) {
+    const chatBox = document.getElementById("decodedMessages");
+
+    const bubble = document.createElement("div");
+    bubble.classList.add("chat-bubble", sender === "me" ? "me" : "her");
+
+    const label = document.createElement("div");
+    label.classList.add("sender-label");
+    label.textContent = sender === "me" ? "Аз" : "Тя";
+
+    const message = document.createElement("div");
+    message.textContent = text;
+
+    bubble.appendChild(label);
+    bubble.appendChild(message);
+    chatBox.appendChild(bubble);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 
     function addEncodedMessage(text) {
         const msgDiv = document.createElement("div");
