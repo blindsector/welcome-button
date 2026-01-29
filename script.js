@@ -3,76 +3,82 @@ const sendBtn = document.getElementById("sendBtn");
 const encodedMessages = document.getElementById("encodedMessages");
 const chatMessages = document.getElementById("chatMessages");
 
-
 let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
 let encodedHistory = JSON.parse(localStorage.getItem("encodedHistory")) || [];
 
 sendBtn.onclick = sendMessage;
 
 function encodeText(text) {
-    return text.split(" ").map(word => dictionary[word.toLowerCase()] || word).join(" ");
+  let result = text.toLowerCase();
+
+  // сортираме фразите по дължина (по-дългите първо)
+  const phrases = Object.keys(dictionary).sort((a, b) => b.length - a.length);
+
+  phrases.forEach(phrase => {
+    const regex = new RegExp("\\b" + phrase + "\\b", "gi");
+    result = result.replace(regex, dictionary[phrase]);
+  });
+
+  return result;
 }
 
 function decodeText(text) {
-  let decoded = text;
+  let result = text;
 
-  // Подреждаме фразите по дължина (по-дългите първо)
   const phrases = Object.keys(reverseDictionary).sort((a, b) => b.length - a.length);
 
   phrases.forEach(phrase => {
-    const original = reverseDictionary[phrase];
-
-    // правим case-insensitive замяна
-    const regex = new RegExp(phrase, "gi");
-    decoded = decoded.replace(regex, original);
+    const regex = new RegExp("\\b" + phrase + "\\b", "gi");
+    result = result.replace(regex, reverseDictionary[phrase]);
   });
 
-  return decoded;
+  return result;
 }
 
-
 function sendMessage() {
-    const text = messageInput.value.trim();
-    if (!text) return;
+  const text = messageInput.value.trim();
+  if (!text) return;
 
-    const encoded = encodeText(text);
-    addEncoded(encoded);
-    addChatBubble(text, "me");
+  const encoded = encodeText(text);
 
-    encodedHistory.push(encoded);
-    chatHistory.push({ sender: "me", text });
+  addEncoded(encoded);
+  addChatBubble(text, "me");
 
-    saveData();
-    messageInput.value = "";
+  encodedHistory.push(encoded);
+  chatHistory.push({ sender: "me", text });
+
+  saveData();
+  messageInput.value = "";
 }
 
 function decodeIncoming() {
-    const code = document.getElementById("incomingCode").value.trim();
-    if (!code) return;
+  const code = document.getElementById("incomingCode").value.trim();
+  if (!code) return;
 
-    const decoded = decodeText(code);
-    addChatBubble(decoded, "her");
+  const decoded = decodeText(code);
 
-    chatHistory.push({ sender: "her", text: decoded });
-    saveData();
+  addChatBubble(decoded, "her");
 
-    document.getElementById("incomingCode").value = "";
+  chatHistory.push({ sender: "her", text: decoded });
+  saveData();
+
+  document.getElementById("incomingCode").value = "";
 }
 
 function addChatBubble(text, sender) {
-    const bubble = document.createElement("div");
-    bubble.className = "bubble " + sender;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble " + sender;
 
-    const label = document.createElement("div");
-    label.className = "sender";
-    label.textContent = sender === "me" ? "Аз" : "Тя";
+  const label = document.createElement("div");
+  label.className = "sender";
+  label.textContent = sender === "me" ? "Аз" : "Тя";
 
-    const msg = document.createElement("div");
-    msg.textContent = text;
+  const msg = document.createElement("div");
+  msg.textContent = text;
 
-    bubble.appendChild(label);
-    bubble.appendChild(msg);
-    chatMessages.appendChild(bubble);
+  bubble.appendChild(label);
+  bubble.appendChild(msg);
+  chatMessages.appendChild(bubble);
 }
 
 function addEncoded(text) {
@@ -87,33 +93,25 @@ function addEncoded(text) {
   encodedMessages.appendChild(div);
 }
 
-
-function saveMessages() {
-    localStorage.setItem("shadow_encoded", document.getElementById("encodedMessages").innerHTML);
-    localStorage.setItem("shadow_decoded", document.getElementById("chatMessages").innerHTML);
+function saveData() {
+  localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  localStorage.setItem("encodedHistory", JSON.stringify(encodedHistory));
 }
 
-function loadMessages() {
-    document.getElementById("encodedMessages").innerHTML = localStorage.getItem("shadow_encoded") || "";
-    document.getElementById("chatMessages").innerHTML = localStorage.getItem("shadow_decoded") || "";
+function loadData() {
+  chatHistory.forEach(msg => addChatBubble(msg.text, msg.sender));
+  encodedHistory.forEach(msg => addEncoded(msg));
 }
 
-window.addEventListener("load", loadMessages);
+window.addEventListener("load", loadData);
 
 function clearAll() {
-    // Ляво – кодирани съобщения
-    const encodedBox = document.getElementById("encodedMessages");
+  encodedMessages.innerHTML = "";
+  chatMessages.innerHTML = "";
 
-    // Дясно – разкодирани съобщения
-    const chatBox = document.getElementById("chatMessages");
+  localStorage.removeItem("chatHistory");
+  localStorage.removeItem("encodedHistory");
 
-    // Чистим екрана
-    encodedBox.innerHTML = "";
-    chatBox.innerHTML = "";
-
-    // Чистим запазеното в паметта
-    localStorage.removeItem("shadow_encoded");
-    localStorage.removeItem("shadow_decoded");
+  chatHistory = [];
+  encodedHistory = [];
 }
-
-loadData();
