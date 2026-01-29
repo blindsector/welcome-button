@@ -1,23 +1,37 @@
-const PASSWORD = "shadow123";
-
 document.addEventListener("DOMContentLoaded", () => {
-    const loginBtn = document.getElementById("loginBtn");
-    const passwordInput = document.getElementById("passwordInput");
-    const loginError = document.getElementById("loginError");
     const loginScreen = document.getElementById("loginScreen");
-    const chatApp = document.getElementById("chatApp");
+    const appScreen = document.getElementById("appScreen");
+    const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const passwordInput = document.getElementById("passwordInput");
+
+    const PASSWORD = "shadow"; // можеш да си я смениш
+
+    function checkLogin() {
+        const loggedIn = localStorage.getItem("shadowLoggedIn");
+        if (loggedIn === "true") {
+            loginScreen.style.display = "none";
+            appScreen.style.display = "block";
+        } else {
+            loginScreen.style.display = "flex";
+            appScreen.style.display = "none";
+        }
+    }
 
     loginBtn.addEventListener("click", () => {
         if (passwordInput.value === PASSWORD) {
-            loginScreen.remove(); // маха го напълно
-            chatApp.classList.remove("hidden");
+            localStorage.setItem("shadowLoggedIn", "true");
+            checkLogin();
+            passwordInput.value = "";
         } else {
-            loginError.textContent = "Грешна парола";
+            alert("Грешна парола");
         }
     });
 
     logoutBtn.addEventListener("click", () => {
-        location.reload();
+        localStorage.removeItem("shadowLoggedIn");
+        checkLogin();
     });
+
+    checkLogin(); // важно — проверява при всяко зареждане
 });
