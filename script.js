@@ -25,9 +25,8 @@ function encodeText(text) {
             return preserveCase(token, baseDictionary[lower]);
         }
         return token;
-    }).join(" "); // ← ВАЖНО
+    }).join(" ");
 }
-
 
 /* ---------------- DECODE ---------------- */
 function decodeText(text) {
@@ -54,11 +53,7 @@ function decodeText(text) {
         }
     }
 
-    return result.join(" "); // ← ВАЖНО
-}
-
-
-    return result.join("");
+    return result.join(" ");
 }
 
 /* ---------------- SEND MESSAGE ---------------- */
