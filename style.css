@@ -105,3 +105,36 @@ textarea {
     border-radius: 8px;
     text-align: center;
 }
+/* CHAT BUBBLES */
+.chat-style .message {
+    max-width: 60%;
+    padding: 10px 12px 18px 12px;
+    border-radius: 14px;
+    position: relative;
+    font-size: 14px;
+}
+
+.message.me {
+    align-self: flex-end;
+    background: #2a6df5;
+}
+
+.message.her {
+    align-self: flex-start;
+    background: #2a2f3d;
+}
+
+.message-label {
+    position: absolute;
+    bottom: 3px;
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.message.me .message-label {
+    right: 10px;
+}
+
+.message.her .message-label {
+    left: 10px;
+}
