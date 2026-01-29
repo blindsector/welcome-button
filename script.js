@@ -1,70 +1,90 @@
-import { encodeText, decodeText } from "./semanticEngine.js";
+const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const encodedBox = document.getElementById("encodedChat");
+const decodedBox = document.getElementById("decodedChat");
 
-const inputText = document.getElementById("inputText");
-const chatBox = document.getElementById("chatBox");
-const encodedReplyBox = document.getElementById("encodedReply");
+sendBtn.addEventListener("click", sendMessage);
 
-let chatHistory = [];
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
 
-/* ===== SAFE RENDER ===== */
-function renderMessage(text, sender) {
-    const chat = document.getElementById("chat");
+function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
 
-    const msg = document.createElement("div");
-    msg.className = "message " + sender;
+  const encoded = encodeText(text);
+  const decoded = decodeText(encoded);
 
-    if (sender === "bot") {
-        msg.innerHTML = "🔒 <b>Кодирано:</b> " + text;
-    } else {
-        msg.textContent = "🧠 Ти: " + text;
-    }
+  addMessage(encodedBox, encoded, true);
+  addMessage(decodedBox, decoded, false);
 
-    chat.appendChild(msg);
-    chat.scrollTop = chat.scrollHeight;
+  saveHistory(encoded, decoded);
+  input.value = "";
 }
 
+function encodeText(text) {
+  let words = text.split(" ");
+  return words.map(w => nounMap[w] || verbMap[w] || w).join(" ");
+}
 
-/* ===== SEND ===== */
-window.sendMessage = function () {
-    const text = inputText.value.trim();
-    if (!text) return;
+function decodeText(text) {
+  let words = text.split(" ");
+  return words.map(w => getKeyByValue(nounMap, w) || getKeyByValue(verbMap, w) || w).join(" ");
+}
 
-    renderMessage("🧠 Ти: " + text, "user");
+function getKeyByValue(obj, val) {
+  return Object.keys(obj).find(key => obj[key] === val);
+}
 
-    const encoded = encodeText(text);
-    setTimeout(() => {
-        renderMessage("🔐 Кодирано: " + encoded, "coded");
-    }, 300);
+function addMessage(box, text, isEncoded) {
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerText = text;
 
-    inputText.value = "";
-};
+  if (isEncoded) {
+    const btn = document.createElement("button");
+    btn.innerText = "Copy";
+    btn.onclick = () => navigator.clipboard.writeText(text);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(btn);
+  }
 
-/* ===== COPY ===== */
-window.copyLastCode = function () {
-    const codes = document.querySelectorAll(".coded");
-    if (!codes.length) return alert("Няма кодирано съобщение");
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
 
-    const last = codes[codes.length - 1].textContent.replace("🔐 Кодирано: ", "");
-    navigator.clipboard.writeText(last);
-    alert("Кодът е копиран!");
-};
+function saveHistory(enc, dec) {
+  const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  history.push({ enc, dec });
+  localStorage.setItem("chatHistory", JSON.stringify(history));
+}
 
-/* ===== DECODE ===== */
-window.decodeMessage = function () {
-    const codedText = encodedReplyBox.value.trim();
-    if (!codedText) return alert("Постави кодирано съобщение");
+function loadHistory() {
+  const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  history.forEach(m => {
+    addMessage(encodedBox, m.enc, true);
+    addMessage(decodedBox, m.dec, false);
+  });
+}
 
-    const decoded = decodeText(codedText);
-    renderMessage("💬 Разкодирано: " + decoded, "decoded");
-    encodedReplyBox.value = "";
-};
+function clearChat() {
+  localStorage.removeItem("chatHistory");
+  encodedBox.innerHTML = "";
+  decodedBox.innerHTML = "";
+}
 
-/* ===== ENTER SEND ===== */
-inputText.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
+function exportChat() {
+  const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  const text = history.map(m => m.dec).join("\n");
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "decoded_chat.txt";
+  a.click();
+}
 
-});
+window.onload = loadHistory;
