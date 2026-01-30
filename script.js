@@ -18,53 +18,80 @@ function preserveCase(original, replacement) {
 }
 
 /* ---------------- ENCODE ---------------- */
-function encodeText(text) {
-    const tokens = smartSplit(text);
-    let result = [];
+/* ========= ROOT HELPERS ========= */
 
-    tokens.forEach(token => {
-        const lower = token.toLowerCase();
-        if (baseDictionary[lower]) {
-            result.push(preserveCase(token, baseDictionary[lower]));
-        } else {
-            result.push(token);
-        }
-    });
-
-    return result.join(" ")
-        .replace(/\s([.,!?])/g, "$1"); // 🔥 маха интервала пред пунктуация
-}
-
-
-
-/* ---------------- DECODE ---------------- */
-function decodeText(text) {
-    const tokens = smartSplit(text);
-    let result = [];
-
-    for (let i = 0; i < tokens.length; i++) {
-        let current = tokens[i];
-        let next = tokens[i + 1] || "";
-
-        const twoWord = (current + " " + next).toLowerCase();
-
-        if (reverseDictionary[twoWord]) {
-            result.push(matchCase(current, reverseDictionary[twoWord]));
-            i++;
-            continue;
-        }
-
-        const oneWord = current.toLowerCase();
-        if (reverseDictionary[oneWord]) {
-            result.push(matchCase(current, reverseDictionary[oneWord]));
-        } else {
-            result.push(current);
+function splitEnding(word, roots) {
+    for (let root in roots) {
+        if (word.startsWith(root)) {
+            return { root, ending: word.slice(root.length) };
         }
     }
-
-    return result.join(" ")
-        .replace(/\s([.,!?])/g, "$1"); // 🔥 същият фикс
+    return null;
 }
+
+function preserveCase(original, replacement) {
+    if (original[0] === original[0].toUpperCase()) {
+        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    }
+    return replacement;
+}
+
+function smartSplit(text) {
+    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
+}
+
+/* ========= ENCODE ========= */
+
+function encodeWord(word) {
+    const lower = word.toLowerCase();
+
+    if (directWords[lower]) {
+        return preserveCase(word, directWords[lower]);
+    }
+
+    let v = splitEnding(lower, verbRoots);
+    if (v) {
+        return preserveCase(word, verbRoots[v.root] + v.ending);
+    }
+
+    let n = splitEnding(lower, nounRoots);
+    if (n) {
+        return preserveCase(word, nounRoots[n.root] + n.ending);
+    }
+
+    return word;
+}
+
+function encodeText(text) {
+    return smartSplit(text).map(encodeWord).join(" ");
+}
+
+/* ========= DECODE ========= */
+
+function decodeWord(word) {
+    const lower = word.toLowerCase();
+
+    if (reverseDirectWords[lower]) {
+        return preserveCase(word, reverseDirectWords[lower]);
+    }
+
+    let v = splitEnding(lower, reverseVerbRoots);
+    if (v) {
+        return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
+    }
+
+    let n = splitEnding(lower, reverseNounRoots);
+    if (n) {
+        return preserveCase(word, reverseNounRoots[n.root] + n.ending);
+    }
+
+    return word;
+}
+
+function decodeText(text) {
+    return smartSplit(text).map(decodeWord).join(" ");
+}
+
 
 
 function matchCase(original, replacement) {
