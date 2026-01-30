@@ -1,16 +1,3 @@
-// 🔧 safety definitions (НЕ ГИ ПИПАЙ)
-const directWords = typeof directWords !== "undefined" ? directWords : {};
-const reverseDirectWords = typeof reverseDirectWords !== "undefined" ? reverseDirectWords : {};
-
-const verbRoots = typeof verbRoots !== "undefined" ? verbRoots : {};
-const reverseVerbRoots = typeof reverseVerbRoots !== "undefined" ? reverseVerbRoots : {};
-
-const nounRoots = typeof nounRoots !== "undefined" ? nounRoots : {};
-const reverseNounRoots = typeof reverseNounRoots !== "undefined" ? reverseNounRoots : {};
-
-const adjRoots = typeof adjRoots !== "undefined" ? adjRoots : {};
-const reverseAdjRoots = typeof reverseAdjRoots !== "undefined" ? reverseAdjRoots : {};
-
 
 const verbRoots = {
   "излиз": "обелв",
