@@ -46,18 +46,23 @@ function encodeWord(word) {
         return preserveCase(word, directWords[lower]);
     }
 
-    let v = splitEnding(lower, verbRoots);
-    if (v) {
-        return preserveCase(word, verbRoots[v.root] + v.ending);
-    }
-
-    let n = splitEnding(lower, nounRoots);
-    if (n) {
-        return preserveCase(word, nounRoots[n.root] + n.ending);
-    }
-
-    return word;
+let v = splitEnding(lower, verbRoots);
+if (v) {
+    return preserveCase(word, verbRoots[v.root] + v.ending);
 }
+
+let n = splitEnding(lower, nounRoots);
+if (n) {
+    return preserveCase(word, nounRoots[n.root] + n.ending);
+}
+
+let a = splitEnding(lower, adjRoots);   // ✅ НОВО
+if (a) {
+    return preserveCase(word, adjRoots[a.root] + a.ending);
+}
+
+return word;
+
 
 function encodeText(text) {
     return smartSplit(text).map(encodeWord).join(" ");
@@ -72,17 +77,23 @@ function decodeWord(word) {
         return preserveCase(word, reverseDirectWords[lower]);
     }
 
-    let v = splitEnding(lower, reverseVerbRoots);
-    if (v) {
-        return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
-    }
+let v = splitEnding(lower, reverseVerbRoots);
+if (v) {
+    return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
+}
 
-    let n = splitEnding(lower, reverseNounRoots);
-    if (n) {
-        return preserveCase(word, reverseNounRoots[n.root] + n.ending);
-    }
+let n = splitEnding(lower, reverseNounRoots);
+if (n) {
+    return preserveCase(word, reverseNounRoots[n.root] + n.ending);
+}
 
-    return word;
+let a = splitEnding(lower, reverseAdjRoots);   // ✅ НОВО
+if (a) {
+    return preserveCase(word, reverseAdjRoots[a.root] + a.ending);
+}
+
+return word;
+
 }
 
 function decodeText(text) {
