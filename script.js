@@ -20,13 +20,19 @@ function preserveCase(original, replacement) {
 /* ---------------- ENCODE ---------------- */
 /* ========= ROOT HELPERS ========= */
 
+/* 🔥 ФИКС: търси НАЙ-ДЪЛГИЯ съвпадащ корен */
 function splitEnding(word, roots) {
+    let match = null;
+
     for (let root in roots) {
         if (word.startsWith(root)) {
-            return { root, ending: word.slice(root.length) };
+            if (!match || root.length > match.root.length) {
+                match = { root, ending: word.slice(root.length) };
+            }
         }
     }
-    return null;
+
+    return match;
 }
 
 function preserveCase(original, replacement) {
@@ -129,7 +135,7 @@ function decodeIncoming() {
     document.getElementById("incomingCode").value = "";
 }
 
-window.decodeIncoming = decodeIncoming; // 🔥 FIX
+window.decodeIncoming = decodeIncoming;
 
 /* ---------------- CHAT BUBBLE ---------------- */
 function addChatBubble(text, sender) {
