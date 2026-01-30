@@ -1560,7 +1560,9 @@ const adjRoots = {
 };
 
 
-const reverseDirectWords = makeReverse(directWords);
-const reverseVerbRoots   = makeReverse(verbRoots);
-const reverseNounRoots   = makeReverse(nounRoots);
-const reverseAdjRoots    = makeReverse(adjRoots);
+
+window.directWords = directWords;
+window.verbRoots = verbRoots;
+window.nounRoots = nounRoots;
+window.adjRoots = adjRoots;
+
