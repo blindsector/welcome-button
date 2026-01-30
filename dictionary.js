@@ -1552,17 +1552,17 @@ const adjRootsOut = {
   "среден": "тревожен",
   "неярък": "чуждестранен",
   "неприятен": "разумен",
-  "мразовит": "старинен"
+"мразовит": "старинен"
+};
 
-
-     window.verbRoots = verbRoots;
-window.nounRoots = nounRoots;
-window.adjRoots = adjRoots;               // ✅
 window.directWords = directWords;
-
-window.reverseVerbRoots = reverseVerbRoots;
-window.reverseNounRoots = reverseNounRoots;
-window.reverseAdjRoots = reverseAdjRoots; // ✅
 window.reverseDirectWords = reverseDirectWords;
 
-};
+window.verbRoots = verbRoots;
+window.reverseVerbRoots = reverseVerbRoots;
+
+window.nounRoots = nounRoots;
+window.reverseNounRoots = reverseNounRoots;
+
+window.adjRoots = adjRoots;
+window.reverseAdjRoots = reverseAdjRoots;
