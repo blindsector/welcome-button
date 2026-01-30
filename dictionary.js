@@ -1197,6 +1197,8 @@ const nounRoots = {
   "кадър": "преход"
 };
 
+const reverseDirectWords = {};
+
 const directWords = {
 
   "аз": "на",
