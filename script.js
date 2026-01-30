@@ -5,22 +5,22 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
-/* ========= MAKE REVERSE DICTIONARIES AUTOMATIC ========= */
+/* ---------------- REVERSE DICTIONARIES (AUTO) ---------------- */
 
-function reverseObject(obj) {
-    const reversed = {};
-    for (let key in obj) {
-        reversed[obj[key]] = key;
+function makeReverse(dict) {
+    const rev = {};
+    for (let k in dict) {
+        rev[dict[k]] = k;
     }
-    return reversed;
+    return rev;
 }
 
-const reverseDirectWords = reverseObject(directWords);
-const reverseVerbRoots = reverseObject(verbRoots);
-const reverseNounRoots = reverseObject(nounRoots);
-const reverseAdjRoots = reverseObject(adjRoots);
+const reverseDirectWords = makeReverse(directWords);
+const reverseVerbRoots   = makeReverse(verbRoots);
+const reverseNounRoots   = makeReverse(nounRoots);
+const reverseAdjRoots    = makeReverse(adjRoots);
 
-/* ========= HELPERS ========= */
+/* ---------------- HELPERS ---------------- */
 
 function splitEnding(word, roots) {
     let match = null;
@@ -35,7 +35,6 @@ function splitEnding(word, roots) {
 }
 
 function preserveCase(original, replacement) {
-    if (original === original.toUpperCase()) return replacement.toUpperCase();
     if (original[0] === original[0].toUpperCase()) {
         return replacement.charAt(0).toUpperCase() + replacement.slice(1);
     }
@@ -43,10 +42,10 @@ function preserveCase(original, replacement) {
 }
 
 function smartSplit(text) {
-    return text.match(/[a-zA-Zа-яА-Я0-9]+|[.,!?]/g) || [];
+    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
 }
 
-/* ========= ENCODE ========= */
+/* ---------------- ENCODE ---------------- */
 
 function encodeWord(word) {
     const lower = word.toLowerCase();
@@ -71,7 +70,7 @@ function encodeText(text) {
     return smartSplit(text).map(encodeWord).join(" ");
 }
 
-/* ========= DECODE ========= */
+/* ---------------- DECODE ---------------- */
 
 function decodeWord(word) {
     const lower = word.toLowerCase();
@@ -96,7 +95,7 @@ function decodeText(text) {
     return smartSplit(text).map(decodeWord).join(" ");
 }
 
-/* ========= UI ========= */
+/* ---------------- SEND MESSAGE ---------------- */
 
 function sendMessage() {
     const text = messageInput.value.trim();
@@ -110,6 +109,8 @@ function sendMessage() {
     messageInput.value = "";
 }
 
+/* ---------------- DECODE INCOMING ---------------- */
+
 function decodeIncoming() {
     const code = document.getElementById("incomingCode").value.trim();
     if (!code) return;
@@ -122,6 +123,8 @@ function decodeIncoming() {
 }
 
 window.decodeIncoming = decodeIncoming;
+
+/* ---------------- UI ---------------- */
 
 function addChatBubble(text, sender) {
     const bubble = document.createElement("div");
@@ -157,6 +160,8 @@ function addEncoded(text) {
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
 }
 
+/* ---------------- SAVE / LOAD ---------------- */
+
 function saveMessages() {
     localStorage.setItem("shadowChat_messages", chatMessages.innerHTML);
     localStorage.setItem("shadowChat_encoded", encodedMessages.innerHTML);
@@ -168,11 +173,3 @@ function loadMessages() {
 }
 
 window.addEventListener("load", loadMessages);
-
-function clearAll() {
-    chatMessages.innerHTML = "";
-    encodedMessages.innerHTML = "";
-    localStorage.removeItem("shadowChat_messages");
-    localStorage.removeItem("shadowChat_encoded");
-}
-window.clearAll = clearAll;
