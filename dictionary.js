@@ -1559,13 +1559,6 @@ const adjRoots = {
 "мразовит": "старинен"
 };
 
-function makeReverse(dict) {
-    const rev = {};
-    for (let k in dict) {
-        rev[dict[k]] = k;
-    }
-    return rev;
-}
 
 const reverseDirectWords = makeReverse(directWords);
 const reverseVerbRoots   = makeReverse(verbRoots);
