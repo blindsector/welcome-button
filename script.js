@@ -5,12 +5,25 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
-/* ========= ROOT HELPERS ========= */
+/* ========= MAKE REVERSE DICTIONARIES AUTOMATIC ========= */
 
-/* 🔥 търси НАЙ-ДЪЛГИЯ съвпадащ корен */
+function reverseObject(obj) {
+    const reversed = {};
+    for (let key in obj) {
+        reversed[obj[key]] = key;
+    }
+    return reversed;
+}
+
+const reverseDirectWords = reverseObject(directWords);
+const reverseVerbRoots = reverseObject(verbRoots);
+const reverseNounRoots = reverseObject(nounRoots);
+const reverseAdjRoots = reverseObject(adjRoots);
+
+/* ========= HELPERS ========= */
+
 function splitEnding(word, roots) {
     let match = null;
-
     for (let root in roots) {
         if (word.startsWith(root)) {
             if (!match || root.length > match.root.length) {
@@ -83,7 +96,8 @@ function decodeText(text) {
     return smartSplit(text).map(decodeWord).join(" ");
 }
 
-/* ---------------- SEND MESSAGE ---------------- */
+/* ========= UI ========= */
+
 function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) return;
@@ -96,7 +110,6 @@ function sendMessage() {
     messageInput.value = "";
 }
 
-/* ---------------- DECODE INCOMING ---------------- */
 function decodeIncoming() {
     const code = document.getElementById("incomingCode").value.trim();
     if (!code) return;
@@ -110,7 +123,6 @@ function decodeIncoming() {
 
 window.decodeIncoming = decodeIncoming;
 
-/* ---------------- CHAT BUBBLE ---------------- */
 function addChatBubble(text, sender) {
     const bubble = document.createElement("div");
     bubble.className = "bubble " + sender;
@@ -125,11 +137,9 @@ function addChatBubble(text, sender) {
     bubble.appendChild(label);
     bubble.appendChild(msg);
     chatMessages.appendChild(bubble);
-
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* ---------------- ENCODED MESSAGE + COPY ---------------- */
 function addEncoded(text) {
     const div = document.createElement("div");
     div.className = "encodedLine";
@@ -144,11 +154,9 @@ function addEncoded(text) {
     div.appendChild(span);
     div.appendChild(btn);
     encodedMessages.appendChild(div);
-
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
 }
 
-/* ---------------- SAVE / LOAD ---------------- */
 function saveMessages() {
     localStorage.setItem("shadowChat_messages", chatMessages.innerHTML);
     localStorage.setItem("shadowChat_encoded", encodedMessages.innerHTML);
@@ -161,7 +169,6 @@ function loadMessages() {
 
 window.addEventListener("load", loadMessages);
 
-/* ---------------- CLEAR ---------------- */
 function clearAll() {
     chatMessages.innerHTML = "";
     encodedMessages.innerHTML = "";
