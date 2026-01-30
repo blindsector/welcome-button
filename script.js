@@ -66,6 +66,7 @@ function encodeWord(word) {
     return word;
 }
 
+
 function encodeText(text) {
     return smartSplit(text).map(encodeWord).join(" ");
 }
@@ -90,6 +91,7 @@ function decodeWord(word) {
 
     return word;
 }
+
 
 function decodeText(text) {
     return smartSplit(text).map(decodeWord).join(" ");
