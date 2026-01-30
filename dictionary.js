@@ -1556,7 +1556,7 @@ const adjRootsOut = {
 };
 
 
-const reverseVerbRoots = Object.fromEntries(Object.entries(verbRoots).map(([k,v]) => [v,k]));
-const reverseNounRoots = Object.fromEntries(Object.entries(nounRoots).map(([k,v]) => [v,k]));
-const reverseDirectWords = Object.fromEntries(Object.entries(directWords).map(([k,v]) => [v,k]));
-const reverseAdjRoots = Object.fromEntries(Object.entries(adjRoots).map(([k,v]) => [v,k]));
+const.reverseVerbRoots = Object.fromEntries(Object.entries(verbRoots).map(([k,v]) => [v,k]));
+const.reverseNounRoots = Object.fromEntries(Object.entries(nounRoots).map(([k,v]) => [v,k]));
+const.reverseDirectWords = Object.fromEntries(Object.entries(directWords).map(([k,v]) => [v,k]));
+const.reverseAdjRoots = Object.fromEntries(Object.entries(adjRoots).map(([k,v]) => [v,k]));
