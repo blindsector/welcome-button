@@ -1213,7 +1213,7 @@ const directWords = {
   "до": "днес"
 };
 
-const adjRootsOut = {
+const adjRoots = {
   "тъмносин": "каменен",
   "закъсн": "резкав",
   "явен": "навременен",
