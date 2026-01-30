@@ -1559,10 +1559,7 @@ const adjRoots = {
 "мразовит": "старинен"
 };
 
-
-
 window.directWords = directWords;
 window.verbRoots = verbRoots;
 window.nounRoots = nounRoots;
 window.adjRoots = adjRoots;
-
