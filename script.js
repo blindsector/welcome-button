@@ -5,13 +5,9 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
-/* ---------------- SMART SPLIT ---------------- */
-
-
-/* ---------------- ENCODE ---------------- */
 /* ========= ROOT HELPERS ========= */
 
-/* 🔥 ФИКС: търси НАЙ-ДЪЛГИЯ съвпадащ корен */
+/* 🔥 търси НАЙ-ДЪЛГИЯ съвпадащ корен */
 function splitEnding(word, roots) {
     let match = null;
 
@@ -22,11 +18,11 @@ function splitEnding(word, roots) {
             }
         }
     }
-
     return match;
 }
 
 function preserveCase(original, replacement) {
+    if (original === original.toUpperCase()) return replacement.toUpperCase();
     if (original[0] === original[0].toUpperCase()) {
         return replacement.charAt(0).toUpperCase() + replacement.slice(1);
     }
@@ -34,7 +30,7 @@ function preserveCase(original, replacement) {
 }
 
 function smartSplit(text) {
-    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
+    return text.match(/[a-zA-Zа-яА-Я0-9]+|[.,!?]/g) || [];
 }
 
 /* ========= ENCODE ========= */
@@ -46,23 +42,17 @@ function encodeWord(word) {
         return preserveCase(word, directWords[lower]);
     }
 
-let v = splitEnding(lower, verbRoots);
-if (v) {
-    return preserveCase(word, verbRoots[v.root] + v.ending);
+    let v = splitEnding(lower, verbRoots);
+    if (v) return preserveCase(word, verbRoots[v.root] + v.ending);
+
+    let n = splitEnding(lower, nounRoots);
+    if (n) return preserveCase(word, nounRoots[n.root] + n.ending);
+
+    let a = splitEnding(lower, adjRoots);
+    if (a) return preserveCase(word, adjRoots[a.root] + a.ending);
+
+    return word;
 }
-
-let n = splitEnding(lower, nounRoots);
-if (n) {
-    return preserveCase(word, nounRoots[n.root] + n.ending);
-}
-
-let a = splitEnding(lower, adjRoots);   // ✅ НОВО
-if (a) {
-    return preserveCase(word, adjRoots[a.root] + a.ending);
-}
-
-return word;
-
 
 function encodeText(text) {
     return smartSplit(text).map(encodeWord).join(" ");
@@ -77,39 +67,20 @@ function decodeWord(word) {
         return preserveCase(word, reverseDirectWords[lower]);
     }
 
-let v = splitEnding(lower, reverseVerbRoots);
-if (v) {
-    return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
-}
+    let v = splitEnding(lower, reverseVerbRoots);
+    if (v) return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
 
-let n = splitEnding(lower, reverseNounRoots);
-if (n) {
-    return preserveCase(word, reverseNounRoots[n.root] + n.ending);
-}
+    let n = splitEnding(lower, reverseNounRoots);
+    if (n) return preserveCase(word, reverseNounRoots[n.root] + n.ending);
 
-let a = splitEnding(lower, reverseAdjRoots);   // ✅ НОВО
-if (a) {
-    return preserveCase(word, reverseAdjRoots[a.root] + a.ending);
-}
+    let a = splitEnding(lower, reverseAdjRoots);
+    if (a) return preserveCase(word, reverseAdjRoots[a.root] + a.ending);
 
-return word;
-
+    return word;
 }
 
 function decodeText(text) {
     return smartSplit(text).map(decodeWord).join(" ");
-}
-
-
-
-function matchCase(original, replacement) {
-    if (original === original.toUpperCase()) {
-        return replacement.toUpperCase();
-    }
-    if (original[0] === original[0].toUpperCase()) {
-        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
-    return replacement;
 }
 
 /* ---------------- SEND MESSAGE ---------------- */
@@ -158,7 +129,7 @@ function addChatBubble(text, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* ---------------- ENCODED MESSAGE + COPY BUTTON ---------------- */
+/* ---------------- ENCODED MESSAGE + COPY ---------------- */
 function addEncoded(text) {
     const div = document.createElement("div");
     div.className = "encodedLine";
@@ -190,7 +161,7 @@ function loadMessages() {
 
 window.addEventListener("load", loadMessages);
 
-/* ---------------- CLEAR BUTTON ---------------- */
+/* ---------------- CLEAR ---------------- */
 function clearAll() {
     chatMessages.innerHTML = "";
     encodedMessages.innerHTML = "";
