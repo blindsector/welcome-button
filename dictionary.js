@@ -1198,6 +1198,8 @@ const nounRoots = {
 };
 
 const directWords = {
+  const reverseDirectWords = {};
+
   "аз": "на",
   "те": "вие",
   "тук": "вчера",
