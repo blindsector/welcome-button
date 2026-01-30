@@ -1560,13 +1560,6 @@ const adjRoots = {
 };
 
 window.directWords = directWords;
-window.reverseDirectWords = reverseDirectWords;
-
 window.verbRoots = verbRoots;
-window.reverseVerbRoots = reverseVerbRoots;
-
 window.nounRoots = nounRoots;
-window.reverseNounRoots = reverseNounRoots;
-
 window.adjRoots = adjRoots;
-window.reverseAdjRoots = reverseAdjRoots;
