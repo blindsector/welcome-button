@@ -6,16 +6,7 @@ const encodedMessages = document.getElementById("encodedMessages");
 sendBtn.onclick = sendMessage;
 
 /* ---------------- SMART SPLIT ---------------- */
-function smartSplit(text) {
-    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
-}
 
-function preserveCase(original, replacement) {
-    if (original[0] === original[0]?.toUpperCase()) {
-        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
-    return replacement;
-}
 
 /* ---------------- ENCODE ---------------- */
 /* ========= ROOT HELPERS ========= */
