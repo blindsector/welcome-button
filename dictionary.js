@@ -1556,4 +1556,14 @@ const adjRootsOut = {
 
 window.directWords = {
    ...
+     window.verbRoots = verbRoots;
+window.nounRoots = nounRoots;
+window.adjRoots = adjRoots;               // ✅
+window.directWords = directWords;
+
+window.reverseVerbRoots = reverseVerbRoots;
+window.reverseNounRoots = reverseNounRoots;
+window.reverseAdjRoots = reverseAdjRoots; // ✅
+window.reverseDirectWords = reverseDirectWords;
+
 };
