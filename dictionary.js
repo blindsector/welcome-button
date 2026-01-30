@@ -1554,8 +1554,7 @@ const adjRootsOut = {
   "неприятен": "разумен",
   "мразовит": "старинен"
 
-window.directWords = {
-   ...
+
      window.verbRoots = verbRoots;
 window.nounRoots = nounRoots;
 window.adjRoots = adjRoots;               // ✅
