@@ -18,36 +18,38 @@
 
 <div id="app" class="hidden">
     <header>
+        <button class="header-btn logout" onclick="logout()">Logout</button>
         <h1>Shadow Chat</h1>
-        <div class="top-buttons">
-            <button onclick="exportChat()">Export</button>
-            <button onclick="clearAll()">Clear</button>
-            <button onclick="logout()">Logout</button>
+        <div class="top-buttons-vertical">
+            <button class="header-btn export" onclick="exportChat()">Export</button>
+            <button class="header-btn clear" onclick="clearAll()">Clear</button>
         </div>
     </header>
 
     <div class="container">
         <div class="left-panel">
-            <h2>Кодирано (за пращане)</h2>
+            <h2>Кодирани съобщения</h2>
             <div id="encodedMessages" class="encoded-messages"></div>
         </div>
 
         <div class="right-panel">
-            <h2>Разкодирано (четим чат)</h2>
+            <h2>Разкодиран чат</h2>
             <div id="chatMessages" class="chat-messages"></div>
         </div>
     </div>
 
     <div class="bottom-area">
-        <div class="incoming-box bubble-input">
-            <input type="text" id="incomingCode" placeholder="Постави получен код тук...">
-            <button onclick="decodeIncoming()">Разкодирай</button>
+
+        <div class="incoming-box bubble-input incoming-area">
+            <input type="text" id="incomingCode" placeholder="Постави получения код тук...">
+            <button class="decode-btn" onclick="decodeIncoming()">Разкодирай</button>
         </div>
 
         <div class="send-box bubble-input">
             <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
             <button id="sendBtn">➤</button>
         </div>
+
     </div>
 </div>
 
