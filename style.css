@@ -64,7 +64,7 @@ header h1 {
     flex-direction: column;
 }
 
-/* CHAT BUBBLES (ДЕСЕН ЕКРАН) */
+/* CHAT BUBBLES */
 .bubble {
     max-width: 80%;
     padding: 10px 12px;
@@ -72,6 +72,7 @@ header h1 {
     margin: 6px 0;
     word-wrap: break-word;
     font-size: 14px;
+    position: relative;
 }
 
 .me {
@@ -90,7 +91,7 @@ header h1 {
     margin-bottom: 3px;
 }
 
-/* КОДИРАНИ БАЛОНИ (ЛЯВ ЕКРАН) */
+/* ENCODED BUBBLES */
 .encoded-bubble {
     max-width: 90%;
     padding: 8px 10px;
@@ -98,6 +99,7 @@ header h1 {
     margin: 6px 0;
     font-size: 13px;
     word-break: break-all;
+    position: relative;
 }
 
 .encoded-me {
@@ -108,6 +110,17 @@ header h1 {
 .encoded-her {
     align-self: flex-end;
     background: #3a2a2a;
+}
+
+/* COPY BUTTON */
+.copy-btn {
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
 }
 
 /* BOTTOM AREA */
