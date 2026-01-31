@@ -122,6 +122,12 @@ function saveMessages() {
 function loadMessages() {
     chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
     encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
+
+    // 👉 АВТО СКРОЛ СЛЕД ЗАРЕЖДАНЕ
+    setTimeout(() => {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        encodedMessages.scrollTop = encodedMessages.scrollHeight;
+    }, 50);
 }
 
 window.addEventListener("load", loadMessages);
