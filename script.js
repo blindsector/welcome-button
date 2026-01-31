@@ -2,8 +2,22 @@ const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const chatMessages = document.getElementById("chatMessages");
 const encodedMessages = document.getElementById("encodedMessages");
-
+const exportBtn = document.getElementById("exportBtn");
+const clearBtn = document.getElementById("clearBtn");
 sendBtn.onclick = sendMessage;
+
+
+
+
+/* 👉 ВРЪЗВАМЕ ГОРНИТЕ БУТОНИ КЪМ СЪЩИТЕ ФУНКЦИИ */
+exportBtn.onclick = () => {
+    if (typeof exportChat === "function") exportChat();
+};
+
+clearBtn.onclick = () => {
+    if (typeof clearAll === "function") clearAll();
+};
+
 
 /* ---------------- РАЗДЕЛЯНЕ НА ДУМИ ---------------- */
 function smartSplit(text) {
