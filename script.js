@@ -33,6 +33,12 @@ function transformText(text) {
     return smartSplit(text).map(transformWord).join(" ");
 }
 
+/* ---------------- СКРОЛ ФУНКЦИЯ (НОВО) ---------------- */
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    encodedMessages.scrollTop = encodedMessages.scrollHeight;
+}
+
 /* ---------------- ИЗПРАЩАНЕ ---------------- */
 function sendMessage() {
     const text = messageInput.value.trim();
@@ -85,7 +91,7 @@ function addChatBubble(text, sender) {
     bubble.appendChild(btn);
     chatMessages.appendChild(bubble);
 
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    requestAnimationFrame(scrollToBottom); // ⬅️ FIX
 }
 
 /* ---------------- КОДИРАНИ БАЛОНИ ---------------- */
@@ -110,7 +116,7 @@ function addEncoded(text, fromHer = false) {
     bubble.appendChild(btn);
     encodedMessages.appendChild(bubble);
 
-    encodedMessages.scrollTop = encodedMessages.scrollHeight;
+    requestAnimationFrame(scrollToBottom); // ⬅️ FIX
 }
 
 /* ---------------- SAVE / LOAD ---------------- */
@@ -123,11 +129,10 @@ function loadMessages() {
     chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
     encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
 
-    // 👉 АВТО СКРОЛ СЛЕД ЗАРЕЖДАНЕ
-    setTimeout(() => {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        encodedMessages.scrollTop = encodedMessages.scrollHeight;
-    }, 50);
+    // ⬇️ FIX — изчаква реалното рендериране
+    requestAnimationFrame(() => {
+        requestAnimationFrame(scrollToBottom);
+    });
 }
 
 window.addEventListener("load", loadMessages);
