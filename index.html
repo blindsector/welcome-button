@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shadow Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,7 +29,7 @@
     <div class="container">
         <div class="left-panel">
             <h2>Кодирано (за пращане)</h2>
-            <div id="encodedMessages"></div>
+            <div id="encodedMessages" class="encoded-messages"></div>
         </div>
 
         <div class="right-panel">
@@ -39,12 +39,12 @@
     </div>
 
     <div class="bottom-area">
-        <div class="incoming-box">
+        <div class="incoming-box bubble-input">
             <input type="text" id="incomingCode" placeholder="Постави получен код тук...">
-            <button onclick="decodeIncoming()">Разкодирай входящо</button>
+            <button onclick="decodeIncoming()">Разкодирай</button>
         </div>
 
-        <div class="send-box">
+        <div class="send-box bubble-input">
             <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
             <button id="sendBtn">➤</button>
         </div>
