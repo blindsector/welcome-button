@@ -20,9 +20,11 @@
     <header>
         <h1>Shadow Chat</h1>
         <div class="top-buttons">
-            <button onclick="exportChat()">Export</button>
-            <button onclick="clearAll()">Clear</button>
-            <button onclick="logout()">Logout</button>
+            <div class="stack-buttons">
+                <button class="top-btn">Export</button>
+                <button class="top-btn">Clear</button>
+            </div>
+            <button class="top-btn logout-btn" onclick="logout()">Logout</button>
         </div>
     </header>
 
@@ -41,7 +43,7 @@
     <div class="bottom-area">
         <div class="incoming-box bubble-input">
             <input type="text" id="incomingCode" placeholder="Постави получен код тук...">
-            <button onclick="decodeIncoming()">Разкодирай</button>
+            <button class="decode-btn" onclick="decodeIncoming()">Разкодирай</button>
         </div>
 
         <div class="send-box bubble-input">
