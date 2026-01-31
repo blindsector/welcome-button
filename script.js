@@ -73,8 +73,14 @@ function addChatBubble(text, sender) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
+    const copy = document.createElement("button");
+    copy.className = "copy-btn";
+    copy.textContent = "Copy";
+    copy.onclick = () => navigator.clipboard.writeText(text);
+
     bubble.appendChild(label);
     bubble.appendChild(msg);
+    bubble.appendChild(copy);
     chatMessages.appendChild(bubble);
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -92,14 +98,14 @@ function addEncoded(text, fromHer = false) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
-    const btn = document.createElement("button");
-    btn.textContent = "Copy";
-    btn.style.marginTop = "6px";
-    btn.onclick = () => navigator.clipboard.writeText(text);
+    const copy = document.createElement("button");
+    copy.className = "copy-btn";
+    copy.textContent = "Copy";
+    copy.onclick = () => navigator.clipboard.writeText(text);
 
     bubble.appendChild(label);
     bubble.appendChild(msg);
-    bubble.appendChild(btn);
+    bubble.appendChild(copy);
     encodedMessages.appendChild(bubble);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
