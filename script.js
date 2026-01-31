@@ -5,111 +5,40 @@ const encodedMessages = document.getElementById("encodedMessages");
 
 sendBtn.onclick = sendMessage;
 
-/* ---------------- SMART SPLIT ---------------- */
+/* ---------------- РАЗДЕЛЯНЕ НА ДУМИ ---------------- */
 function smartSplit(text) {
-    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
+    return text.match(/[A-Za-zА-Яа-я0-9]+|[.,!?]/g) || [];
 }
 
+/* ---------------- ЗАПАЗВАНЕ НА ГЛАВНИ БУКВИ ---------------- */
 function preserveCase(original, replacement) {
-    if (original[0] === original[0]?.toUpperCase()) {
+    if (original === original.toUpperCase()) return replacement.toUpperCase();
+    if (original[0] === original[0].toUpperCase())
         return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
     return replacement;
 }
 
-/* ---------------- ENCODE ---------------- */
-/* ========= ROOT HELPERS ========= */
-
-function splitEnding(word, roots) {
-    for (let root in roots) {
-        if (word.startsWith(root)) {
-            return { root, ending: word.slice(root.length) };
-        }
-    }
-    return null;
-}
-
-function preserveCase(original, replacement) {
-    if (original[0] === original[0].toUpperCase()) {
-        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
-    return replacement;
-}
-
-function smartSplit(text) {
-    return text.match(/[\wа-яА-Я]+|[.,!?]/g) || [];
-}
-
-/* ========= ENCODE ========= */
-
-function encodeWord(word) {
+/* ---------------- СМЯНА ПО РЕЧНИЦИ ---------------- */
+function transformWord(word) {
     const lower = word.toLowerCase();
 
-    if (directWords[lower]) {
-        return preserveCase(word, directWords[lower]);
-    }
-
-    let v = splitEnding(lower, verbRoots);
-    if (v) {
-        return preserveCase(word, verbRoots[v.root] + v.ending);
-    }
-
-    let n = splitEnding(lower, nounRoots);
-    if (n) {
-        return preserveCase(word, nounRoots[n.root] + n.ending);
-    }
+    if (ADJ[lower]) return preserveCase(word, ADJ[lower]);
+    if (NOUN[lower]) return preserveCase(word, NOUN[lower]);
+    if (VERB[lower]) return preserveCase(word, VERB[lower]);
 
     return word;
 }
 
-function encodeText(text) {
-    return smartSplit(text).map(encodeWord).join(" ");
+function transformText(text) {
+    return smartSplit(text).map(transformWord).join(" ");
 }
 
-/* ========= DECODE ========= */
-
-function decodeWord(word) {
-    const lower = word.toLowerCase();
-
-    if (reverseDirectWords[lower]) {
-        return preserveCase(word, reverseDirectWords[lower]);
-    }
-
-    let v = splitEnding(lower, reverseVerbRoots);
-    if (v) {
-        return preserveCase(word, reverseVerbRoots[v.root] + v.ending);
-    }
-
-    let n = splitEnding(lower, reverseNounRoots);
-    if (n) {
-        return preserveCase(word, reverseNounRoots[n.root] + n.ending);
-    }
-
-    return word;
-}
-
-function decodeText(text) {
-    return smartSplit(text).map(decodeWord).join(" ");
-}
-
-
-
-function matchCase(original, replacement) {
-    if (original === original.toUpperCase()) {
-        return replacement.toUpperCase();
-    }
-    if (original[0] === original[0].toUpperCase()) {
-        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
-    return replacement;
-}
-
-/* ---------------- SEND MESSAGE ---------------- */
+/* ---------------- ИЗПРАЩАНЕ ---------------- */
 function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) return;
 
-    const encoded = encodeText(text);
+    const encoded = transformText(text);
     addEncoded(encoded);
     addChatBubble(text, "me");
 
@@ -117,21 +46,21 @@ function sendMessage() {
     messageInput.value = "";
 }
 
-/* ---------------- DECODE INCOMING ---------------- */
+/* ---------------- РАЗКОДИРАНЕ НА ВХОДЯЩО ---------------- */
 function decodeIncoming() {
     const code = document.getElementById("incomingCode").value.trim();
     if (!code) return;
 
-    const decoded = decodeText(code);
+    const decoded = transformText(code);
     addChatBubble(decoded, "her");
 
     saveMessages();
     document.getElementById("incomingCode").value = "";
 }
 
-window.decodeIncoming = decodeIncoming; // 🔥 FIX
+window.decodeIncoming = decodeIncoming;
 
-/* ---------------- CHAT BUBBLE ---------------- */
+/* ---------------- ЧАТ БАЛОН ---------------- */
 function addChatBubble(text, sender) {
     const bubble = document.createElement("div");
     bubble.className = "bubble " + sender;
@@ -150,7 +79,7 @@ function addChatBubble(text, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* ---------------- ENCODED MESSAGE + COPY BUTTON ---------------- */
+/* ---------------- КОДИРАНО СЪОБЩЕНИЕ ---------------- */
 function addEncoded(text) {
     const div = document.createElement("div");
     div.className = "encodedLine";
@@ -182,7 +111,7 @@ function loadMessages() {
 
 window.addEventListener("load", loadMessages);
 
-/* ---------------- CLEAR BUTTON ---------------- */
+/* ---------------- CLEAR ---------------- */
 function clearAll() {
     chatMessages.innerHTML = "";
     encodedMessages.innerHTML = "";
