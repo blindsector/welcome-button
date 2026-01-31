@@ -10,32 +10,53 @@ body {
 /* HEADER */
 header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    justify-content: space-between;
+    padding: 10px 12px;
     background: #111;
 }
 
-.top-buttons button {
-    margin-left: 10px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    border: none;
-    background: #2a2f3a;
-    color: white;
-    font-size: 14px;
+header h1 {
+    font-size: 18px;
+    margin: 0;
 }
+
+.top-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.header-btn {
+    padding: 6px 10px;
+    border-radius: 12px;
+    border: none;
+    font-size: 12px;
+    color: white;
+}
+
+.logout { background: #444; }
+.export { background: #2b6cff; }
+.clear  { background: #aa3333; }
 
 /* LAYOUT */
 .container {
     display: flex;
-    height: 60vh;
+    height: 58vh;
 }
 
 .left-panel, .right-panel {
     flex: 1;
-    padding: 10px;
+    padding: 8px;
     overflow-y: auto;
+}
+
+.left-panel h2,
+.right-panel h2 {
+    font-size: 14px;
+    margin: 4px 0 8px 0;
+    text-align: center;
+    opacity: 0.8;
 }
 
 .chat-messages, .encoded-messages {
@@ -43,13 +64,14 @@ header {
     flex-direction: column;
 }
 
-/* CHAT BUBBLES */
+/* CHAT BUBBLES (ДЕСЕН ЕКРАН) */
 .bubble {
-    max-width: 75%;
-    padding: 12px;
+    max-width: 80%;
+    padding: 10px 12px;
     border-radius: 18px;
     margin: 6px 0;
     word-wrap: break-word;
+    font-size: 14px;
 }
 
 .me {
@@ -63,18 +85,19 @@ header {
 }
 
 .sender {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-bottom: 4px;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-bottom: 3px;
 }
 
-/* ENCODED SIDE BUBBLES */
+/* КОДИРАНИ БАЛОНИ (ЛЯВ ЕКРАН) */
 .encoded-bubble {
-    max-width: 85%;
-    padding: 10px;
-    border-radius: 16px;
+    max-width: 90%;
+    padding: 8px 10px;
+    border-radius: 14px;
     margin: 6px 0;
-    font-size: 14px;
+    font-size: 13px;
+    word-break: break-all;
 }
 
 .encoded-me {
@@ -87,21 +110,25 @@ header {
     background: #3a2a2a;
 }
 
-/* BOTTOM INPUT AREA */
+/* BOTTOM AREA */
 .bottom-area {
     padding: 10px;
     background: #111;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
+}
+
+.incoming-area {
+    margin-bottom: 4px;
 }
 
 .bubble-input {
     display: flex;
     align-items: center;
     background: #1c1f26;
-    border-radius: 20px;
-    padding: 8px 12px;
+    border-radius: 22px;
+    padding: 10px 14px;
 }
 
 .bubble-input input,
@@ -116,14 +143,25 @@ header {
 
 .bubble-input textarea {
     resize: none;
-    height: 40px;
+    height: 44px;
+}
+
+/* DECODE BUTTON */
+.decode-btn {
+    margin-left: 8px;
+    padding: 10px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #cc2e2e;
+    color: white;
+    font-weight: bold;
 }
 
 /* SEND BUTTON */
 #sendBtn {
     margin-left: 8px;
-    width: 48px;
-    height: 48px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     border: none;
     background: #2b6cff;
