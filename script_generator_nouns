@@ -1,0 +1,153 @@
+console.clear();
+console.log("▶ Генериране на МАКСИМАЛЕН граматичен речник...\n");
+
+/* ================== ДУМИ ================== */
+const wordsText = `
+антена точка амачта антена разклонител антенен усилвател антенен делител
+балун бобина  бобинаферитна бобинодържач
+варикап варистор ватметър високочестотник високочестотентрансформатор вчусилвател вчгенератор
+генераторсигнал гетеродин говорителшироколентов гръмоотвод
+детектор диод демодулатор делител мощност диполантена диплексер
+екранировка екранкапак електретенмикрофон
+жичкаантенна жакантенен
+заглушителсигнал захранващфилтър зумерпииезо
+излъчвател контур изолатор измерител мощност
+каскадаусилвател кварцоврезонатор кварцовфилтър  кондензатор конекторbnc  конекторnтип конекторsma контуррезонансен ксвметър
+лампа лампа усилвател 
+мачта  модулятор  модуляция мощномер
+настройкаантена насоченаантена нискочестотенусилвател
+обхватрадиочестотен ограничителшум осцилаторвч отражателантенен
+предавателрадио предусилвателвч приемникрадио преобразувателчестота преобразувателнапрежениевч протекторантенен
+разделителантенен разрядникантенен радиолампа радиомикрофон радиомодем радиопредавател радиоприемник радиостанция ретранслаторрадио рефлекторпараболичен
+смесител честота  съгласуващо устройство спектраленанализатор сплитерантенен
+тюнерантенен тримеркондензатор тримеррезистор
+усилвателантенен усилвателкраен усилвателмеждинночестотен
+фидеркоаксиален филтървч филтърнискочестотен фазовдетектор фазовшум феритенпръстен
+хетеродин хибриденделител
+центраторантенен циркулаторвч
+честотомер цифровчестотомер
+шумоподтискащфилтър шумомеррадиочестотен
+щекерантенен
+
+
+
+
+
+
+
+
+
+
+`;
+
+/* ================== ПОДГОТОВКА ================== */
+let words = wordsText
+  .split(/\s+/)
+  .map(w => w.trim().toLowerCase())
+  .filter(w => w.length > 1);
+
+words = [...new Set(words)];
+
+for (let i = words.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [words[i], words[j]] = [words[j], words[i]];
+}
+
+if (words.length % 2 !== 0) words.pop();
+
+const usedForms = new Set();
+const dictionary = {};
+
+/* ================== ГЕНЕРИРАНЕ ================== */
+
+for (let i = 0; i < words.length; i += 2) {
+  const forms1 = generateAllForms(words[i]);
+  const forms2 = generateAllForms(words[i + 1]);
+
+  const count = Math.min(forms1.length, forms2.length);
+
+  for (let f = 0; f < count; f++) {
+    let k = ensureUnique(forms1[f], usedForms);
+    let v = ensureUnique(forms2[f], usedForms);
+    dictionary[k] = v;
+  }
+}
+
+/* ================== ПЕЧАТ ================== */
+
+console.log("{");
+for (const key in dictionary) {
+  console.log(`  "${key}": "${dictionary[key]}",`);
+}
+console.log("}");
+
+/* ================== ГРАМАТИЧНИ ФОРМИ ================== */
+
+function generateAllForms(word) {
+  const forms = new Set();
+
+  const plural = pluralForm(word);
+
+  forms.add(word);                         // основна
+  forms.add(definiteSingular(word));       // членувано кратко
+  forms.add(definiteSingularFull(word));   // членувано пълно (м.р.)
+  forms.add(plural);                       // множествено
+  forms.add(definitePlural(plural));       // мн.ч. членувано
+  forms.add(vocativeForm(word));           // звателна
+
+  return Array.from(forms).filter(Boolean);
+}
+
+/* ---------- ЕДИНСТВЕНО ЧИСЛО ---------- */
+
+function definiteSingular(word) {
+  if (endsWithAny(word, ["а", "я"])) return word + "та";
+  if (endsWithAny(word, ["о", "е"])) return word + "то";
+  return word + "а"; // кратък член за м.р.
+}
+
+function definiteSingularFull(word) {
+  if (endsWithAny(word, ["а", "я", "о", "е"])) return null;
+  return word + "ът"; // пълен член м.р.
+}
+
+/* ---------- МНОЖЕСТВЕНО ЧИСЛО ---------- */
+
+function pluralForm(word) {
+  if (word.endsWith("а")) return word.slice(0, -1) + "и";
+  if (word.endsWith("я")) return word.slice(0, -1) + "и";
+  if (word.endsWith("о")) return word.slice(0, -1) + "а";
+  if (word.endsWith("е")) return word.slice(0, -1) + "ета";
+  if (word.endsWith("ък")) return word.slice(0, -2) + "ъци";
+  if (word.endsWith("ец")) return word.slice(0, -2) + "ци";
+  if (word.endsWith("й")) return word.slice(0, -1) + "и";
+  return word + "и";
+}
+
+function definitePlural(plural) {
+  return plural + "те";
+}
+
+/* ---------- ЗВАТЕЛНА ФОРМА ---------- */
+
+function vocativeForm(word) {
+  if (word.endsWith("а")) return word.slice(0, -1) + "о";
+  if (word.endsWith("я")) return word.slice(0, -1) + "ьо";
+  if (word.endsWith("о") || word.endsWith("е")) return null;
+  return word + "е";
+}
+
+/* ---------- ПОМОЩНИ ---------- */
+
+function endsWithAny(word, arr) {
+  return arr.some(e => word.endsWith(e));
+}
+
+function ensureUnique(word, usedSet) {
+  let newWord = word;
+  while (usedSet.has(newWord)) {
+    newWord = word + Math.floor(Math.random() * 10);
+  }
+  usedSet.add(newWord);
+  return newWord;
+}
