@@ -39,8 +39,9 @@ function sendMessage() {
     if (!text) return;
 
     const encoded = transformText(text);
-    addEncoded(encoded);
-    addChatBubble(text, "me");
+
+    addChatBubble(text, "me");        // десен екран (истински текст)
+    addEncoded(encoded, false);       // ляв екран (код)
 
     saveMessages();
     messageInput.value = "";
@@ -52,8 +53,9 @@ function decodeIncoming() {
     if (!code) return;
 
     const decoded = transformText(code);
-    addChatBubble(decoded, "her");
-    addEncoded(decoded, true);
+
+    addChatBubble(decoded, "her");    // десен екран (разкодиран)
+    addEncoded(code, true);           // ляв екран (ОРИГИНАЛНИЯТ КОД)
 
     saveMessages();
     document.getElementById("incomingCode").value = "";
@@ -87,19 +89,13 @@ function addEncoded(text, fromHer = false) {
 
     const label = document.createElement("div");
     label.className = "sender";
-    label.textContent = fromHer ? "Тя – декодиран текст" : "Аз – кодиран текст";
+    label.textContent = fromHer ? "Тя – получен код" : "Аз – изпратен код";
 
     const msg = document.createElement("div");
     msg.textContent = text;
 
-    const btn = document.createElement("button");
-    btn.textContent = "Copy";
-    btn.style.marginTop = "6px";
-    btn.onclick = () => navigator.clipboard.writeText(text);
-
     bubble.appendChild(label);
     bubble.appendChild(msg);
-    bubble.appendChild(btn);
     encodedMessages.appendChild(bubble);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
@@ -126,3 +122,23 @@ function clearAll() {
     localStorage.removeItem("shadowChat_encoded");
 }
 window.clearAll = clearAll;
+
+/* ---------------- EXPORT ---------------- */
+function exportChat() {
+    const bubbles = chatMessages.querySelectorAll(".bubble");
+    let text = "";
+
+    bubbles.forEach(b => {
+        const sender = b.querySelector(".sender").textContent;
+        const msg = b.querySelector("div:last-child").textContent;
+        text += sender + ": " + msg + "\n";
+    });
+
+    const blob = new Blob([text], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "shadow_chat.txt";
+    a.click();
+}
+
+window.exportChat = exportChat;
