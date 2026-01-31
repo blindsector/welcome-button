@@ -40,8 +40,8 @@ function sendMessage() {
 
     const encoded = transformText(text);
 
-    addChatBubble(text, "me");        // десен екран (истински текст)
-    addEncoded(encoded, false);       // ляв екран (код)
+    addChatBubble(text, "me");
+    addEncoded(encoded, false);
 
     saveMessages();
     messageInput.value = "";
@@ -54,8 +54,8 @@ function decodeIncoming() {
 
     const decoded = transformText(code);
 
-    addChatBubble(decoded, "her");    // десен екран (разкодиран)
-    addEncoded(code, true);           // ляв екран (ОРИГИНАЛНИЯТ КОД)
+    addChatBubble(decoded, "her");
+    addEncoded(code, true);
 
     saveMessages();
     document.getElementById("incomingCode").value = "";
@@ -75,8 +75,14 @@ function addChatBubble(text, sender) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+    btn.onclick = () => navigator.clipboard.writeText(text);
+
     bubble.appendChild(label);
     bubble.appendChild(msg);
+    bubble.appendChild(btn);
     chatMessages.appendChild(bubble);
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -94,8 +100,14 @@ function addEncoded(text, fromHer = false) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+    btn.onclick = () => navigator.clipboard.writeText(text);
+
     bubble.appendChild(label);
     bubble.appendChild(msg);
+    bubble.appendChild(btn);
     encodedMessages.appendChild(bubble);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
@@ -130,7 +142,7 @@ function exportChat() {
 
     bubbles.forEach(b => {
         const sender = b.querySelector(".sender").textContent;
-        const msg = b.querySelector("div:last-child").textContent;
+        const msg = b.querySelector("div:nth-child(2)").textContent;
         text += sender + ": " + msg + "\n";
     });
 
