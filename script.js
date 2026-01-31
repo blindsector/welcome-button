@@ -2,22 +2,8 @@ const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const chatMessages = document.getElementById("chatMessages");
 const encodedMessages = document.getElementById("encodedMessages");
-const exportBtn = document.getElementById("exportBtn");
-const clearBtn = document.getElementById("clearBtn");
+
 sendBtn.onclick = sendMessage;
-
-
-
-
-/* 👉 ВРЪЗВАМЕ ГОРНИТЕ БУТОНИ КЪМ СЪЩИТЕ ФУНКЦИИ */
-exportBtn.onclick = () => {
-    if (typeof exportChat === "function") exportChat();
-};
-
-clearBtn.onclick = () => {
-    if (typeof clearAll === "function") clearAll();
-};
-
 
 /* ---------------- РАЗДЕЛЯНЕ НА ДУМИ ---------------- */
 function smartSplit(text) {
@@ -87,14 +73,8 @@ function addChatBubble(text, sender) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
-    const copy = document.createElement("button");
-    copy.className = "copy-btn";
-    copy.textContent = "Copy";
-    copy.onclick = () => navigator.clipboard.writeText(text);
-
     bubble.appendChild(label);
     bubble.appendChild(msg);
-    bubble.appendChild(copy);
     chatMessages.appendChild(bubble);
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -112,14 +92,14 @@ function addEncoded(text, fromHer = false) {
     const msg = document.createElement("div");
     msg.textContent = text;
 
-    const copy = document.createElement("button");
-    copy.className = "copy-btn";
-    copy.textContent = "Copy";
-    copy.onclick = () => navigator.clipboard.writeText(text);
+    const btn = document.createElement("button");
+    btn.textContent = "Copy";
+    btn.style.marginTop = "6px";
+    btn.onclick = () => navigator.clipboard.writeText(text);
 
     bubble.appendChild(label);
     bubble.appendChild(msg);
-    bubble.appendChild(copy);
+    bubble.appendChild(btn);
     encodedMessages.appendChild(bubble);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
