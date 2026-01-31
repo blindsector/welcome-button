@@ -53,6 +53,7 @@ function decodeIncoming() {
 
     const decoded = transformText(code);
     addChatBubble(decoded, "her");
+    addEncoded(decoded, true);
 
     saveMessages();
     document.getElementById("incomingCode").value = "";
@@ -79,21 +80,27 @@ function addChatBubble(text, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* ---------------- КОДИРАНО СЪОБЩЕНИЕ ---------------- */
-function addEncoded(text) {
-    const div = document.createElement("div");
-    div.className = "encodedLine";
+/* ---------------- КОДИРАНИ БАЛОНИ ---------------- */
+function addEncoded(text, fromHer = false) {
+    const bubble = document.createElement("div");
+    bubble.className = "encoded-bubble " + (fromHer ? "encoded-her" : "encoded-me");
 
-    const span = document.createElement("span");
-    span.textContent = text;
+    const label = document.createElement("div");
+    label.className = "sender";
+    label.textContent = fromHer ? "Тя – декодиран текст" : "Аз – кодиран текст";
+
+    const msg = document.createElement("div");
+    msg.textContent = text;
 
     const btn = document.createElement("button");
     btn.textContent = "Copy";
+    btn.style.marginTop = "6px";
     btn.onclick = () => navigator.clipboard.writeText(text);
 
-    div.appendChild(span);
-    div.appendChild(btn);
-    encodedMessages.appendChild(div);
+    bubble.appendChild(label);
+    bubble.appendChild(msg);
+    bubble.appendChild(btn);
+    encodedMessages.appendChild(bubble);
 
     encodedMessages.scrollTop = encodedMessages.scrollHeight;
 }
