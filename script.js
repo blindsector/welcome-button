@@ -180,3 +180,35 @@ function exportChat() {
 }
 
 window.exportChat = exportChat;
+
+function toggleHelp() {
+  const modal = document.getElementById("helpModal");
+  modal.classList.toggle("hidden");
+}
+
+/* COPY BUTTON FOR ENCODED MESSAGES */
+function addCopyButtons() {
+  document.querySelectorAll(".encoded-message").forEach(msg => {
+    if (!msg.querySelector(".copy-btn")) {
+      const btn = document.createElement("button");
+      btn.textContent = "Copy";
+      btn.className = "copy-btn";
+      btn.onclick = () => {
+        navigator.clipboard.writeText(
+          msg.childNodes[0].textContent.trim()
+        );
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy", 1200);
+      };
+      msg.appendChild(document.createElement("br"));
+      msg.appendChild(btn);
+    }
+  });
+}
+
+/* наблюдаваме за нови съобщения */
+const observer = new MutationObserver(addCopyButtons);
+window.addEventListener("load", () => {
+  const target = document.getElementById("encodedMessages");
+  if (target) observer.observe(target, { childList: true });
+});
