@@ -24,6 +24,7 @@
         <div class="top-buttons-vertical">
             <button class="header-btn export" onclick="exportChat()">Export</button>
             <button class="header-btn clear" onclick="clearAll()">Clear</button>
+            <button class="header-btn help" onclick="toggleHelp()">?</button>
         </div>
     </header>
 
@@ -40,7 +41,6 @@
     </div>
 
     <div class="bottom-area">
-
         <div class="incoming-box bubble-input incoming-area">
             <input type="text" id="incomingCode" placeholder="Постави получения код тук...">
             <button class="decode-btn" onclick="decodeIncoming()">Разкодирай</button>
@@ -50,8 +50,24 @@
             <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
             <button id="sendBtn">➤</button>
         </div>
-
     </div>
+</div>
+
+<!-- HELP MODAL -->
+<div id="helpModal" class="help-modal hidden">
+  <div class="help-content">
+    <h2>Инструкции за агенти</h2>
+    <p>🕶️ Това не е обикновен чат.</p>
+    <ol>
+      <li>Пиши съобщение долу.</li>
+      <li>Ще се появи кодиран текст вляво.</li>
+      <li>Изпрати кода на другия агент.</li>
+      <li>Постави получения код горе вляво.</li>
+      <li>Натисни „Разкодирай“.</li>
+    </ol>
+    <p>Само посветените разбират смисъла.</p>
+    <button class="header-btn" onclick="toggleHelp()">Затвори</button>
+  </div>
 </div>
 
 <script src="auth.js"></script>
