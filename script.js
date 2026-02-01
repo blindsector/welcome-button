@@ -3,6 +3,10 @@ const sendBtn = document.getElementById("sendBtn");
 const chatMessages = document.getElementById("chatMessages");
 const encodedMessages = document.getElementById("encodedMessages");
 
+// 👉 ВЗИМАМЕ РОДИТЕЛИТЕ, КОИТО РЕАЛНО СКРОЛВАТ
+const chatPanel = chatMessages.parentElement;
+const encodedPanel = encodedMessages.parentElement;
+
 sendBtn.onclick = sendMessage;
 
 /* ---------------- РАЗДЕЛЯНЕ НА ДУМИ ---------------- */
@@ -33,10 +37,10 @@ function transformText(text) {
     return smartSplit(text).map(transformWord).join(" ");
 }
 
-/* ---------------- ПОДОБРЕН СКРОЛ ---------------- */
+/* ---------------- ИСТИНСКИ СКРОЛ ---------------- */
 function scrollToBottomSmooth() {
-    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: "smooth" });
-    encodedMessages.scrollTo({ top: encodedMessages.scrollHeight, behavior: "smooth" });
+    chatPanel.scrollTo({ top: chatPanel.scrollHeight, behavior: "smooth" });
+    encodedPanel.scrollTo({ top: encodedPanel.scrollHeight, behavior: "smooth" });
 }
 
 /* ---------------- ИЗПРАЩАНЕ ---------------- */
