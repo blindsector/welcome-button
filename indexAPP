@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Shadow Chat</title>
+
+    <meta name="theme-color" content="#111111">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <h2>Shadow Chat Login</h2>
+        <input type="password" id="passwordInput" placeholder="Парола">
+        <button onclick="checkLogin()">Вход</button>
+    </div>
+</div>
+
+<div id="app" class="hidden">
+    <header>
+        <button class="header-btn logout" onclick="logout()">Logout</button>
+        <h1>Shadow Chat</h1>
+        <div class="top-buttons-vertical">
+            <button class="header-btn export" onclick="exportChat()">Export</button>
+            <button class="header-btn clear" onclick="clearAll()">Clear</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="left-panel">
+            <h2>Кодирани съобщения</h2>
+            <div id="encodedMessages" class="encoded-messages"></div>
+        </div>
+
+        <div class="right-panel">
+            <h2>Разкодиран чат</h2>
+            <div id="chatMessages" class="chat-messages"></div>
+        </div>
+    </div>
+
+    <div class="bottom-area">
+
+        <div class="incoming-box bubble-input incoming-area">
+            <input type="text" id="incomingCode" placeholder="Постави получения код тук...">
+            <button class="decode-btn" onclick="decodeIncoming()">Разкодирай</button>
+        </div>
+
+        <div class="send-box bubble-input">
+            <textarea id="messageInput" placeholder="Пиши тук..."></textarea>
+            <button id="sendBtn">➤</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="auth.js"></script>
+<script src="dictionary.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
