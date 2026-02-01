@@ -213,3 +213,38 @@ header h1 {
     padding: 20px;
     border-radius: 10px;
 }
+/* HELP MODAL */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.help-content {
+  background: #111;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.help-content h2 {
+  margin-top: 0;
+}
+
+.copy-btn {
+  margin-top: 6px;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
