@@ -4,6 +4,15 @@ window.onload = function () {
     if (localStorage.getItem("loggedIn") === "true") {
         showApp();
     }
+
+    const passInput = document.getElementById("passwordInput");
+    if (passInput) {
+        passInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                checkLogin();
+            }
+        });
+    }
 };
 
 function checkLogin() {
