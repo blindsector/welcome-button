@@ -33,10 +33,10 @@ function transformText(text) {
     return smartSplit(text).map(transformWord).join(" ");
 }
 
-/* ---------------- СКРОЛ ФУНКЦИЯ (НОВО) ---------------- */
-function scrollToBottom() {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    encodedMessages.scrollTop = encodedMessages.scrollHeight;
+/* ---------------- ПОДОБРЕН СКРОЛ ---------------- */
+function scrollToBottomSmooth() {
+    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: "smooth" });
+    encodedMessages.scrollTo({ top: encodedMessages.scrollHeight, behavior: "smooth" });
 }
 
 /* ---------------- ИЗПРАЩАНЕ ---------------- */
@@ -69,6 +69,18 @@ function decodeIncoming() {
 
 window.decodeIncoming = decodeIncoming;
 
+/* ---------------- COPY С ЕФЕКТ ---------------- */
+function copyWithFeedback(button, text) {
+    navigator.clipboard.writeText(text);
+    const original = button.textContent;
+    button.textContent = "Copied ✓";
+    button.classList.add("copied");
+    setTimeout(() => {
+        button.textContent = original;
+        button.classList.remove("copied");
+    }, 900);
+}
+
 /* ---------------- ЧАТ БАЛОН ---------------- */
 function addChatBubble(text, sender) {
     const bubble = document.createElement("div");
@@ -84,14 +96,14 @@ function addChatBubble(text, sender) {
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.textContent = "Copy";
-    btn.onclick = () => navigator.clipboard.writeText(text);
+    btn.onclick = () => copyWithFeedback(btn, text);
 
     bubble.appendChild(label);
     bubble.appendChild(msg);
     bubble.appendChild(btn);
     chatMessages.appendChild(bubble);
 
-    requestAnimationFrame(scrollToBottom); // ⬅️ FIX
+    requestAnimationFrame(scrollToBottomSmooth);
 }
 
 /* ---------------- КОДИРАНИ БАЛОНИ ---------------- */
@@ -109,14 +121,14 @@ function addEncoded(text, fromHer = false) {
     const btn = document.createElement("button");
     btn.className = "copy-btn";
     btn.textContent = "Copy";
-    btn.onclick = () => navigator.clipboard.writeText(text);
+    btn.onclick = () => copyWithFeedback(btn, text);
 
     bubble.appendChild(label);
     bubble.appendChild(msg);
     bubble.appendChild(btn);
     encodedMessages.appendChild(bubble);
 
-    requestAnimationFrame(scrollToBottom); // ⬅️ FIX
+    requestAnimationFrame(scrollToBottomSmooth);
 }
 
 /* ---------------- SAVE / LOAD ---------------- */
@@ -129,9 +141,8 @@ function loadMessages() {
     chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
     encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
 
-    // ⬇️ FIX — изчаква реалното рендериране
     requestAnimationFrame(() => {
-        requestAnimationFrame(scrollToBottom);
+        requestAnimationFrame(scrollToBottomSmooth);
     });
 }
 
