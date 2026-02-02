@@ -1,4 +1,4 @@
-const API_BASE = "https://penguin-nlp-server.onrender.com"; // временен онлайн мозък
+const API_BASE = "https://penguin-nlp-server.onrender.com";
 
 // ================== API ВРЪЗКА ==================
 
@@ -6,31 +6,23 @@ async function encodeText(text) {
     const res = await fetch(API_BASE + "/encode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            text: text,
-            dictionary: DICTIONARY
-        })
+        body: JSON.stringify({ text: text, dictionary: DICTIONARY })
     });
     const data = await res.json();
     return data.result;
 }
-
 
 async function decodeText(text) {
     const res = await fetch(API_BASE + "/decode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            text: text,
-            dictionary: DICTIONARY
-        })
+        body: JSON.stringify({ text: text, dictionary: DICTIONARY })
     });
     const data = await res.json();
     return data.result;
 }
 
-
-// ================== СТАРИТЕ ФУНКЦИИ (НЕ ГИ ПИПАМЕ) ==================
+// ================== UI ЛОГИКА ==================
 
 document.getElementById("sendBtn").addEventListener("click", sendMessage);
 document.getElementById("messageInput").addEventListener("keydown", function(e) {
@@ -68,9 +60,36 @@ async function decodeIncoming() {
     codeInput.value = "";
 }
 
-// ================== ОСТАНАЛОТО СИ ОСТАВА СЪЩОТО ==================
+// ================== ЧАТ ВИЗУАЛИЗАЦИЯ ==================
 
-// Тук остават всички твои функции като:
-// addChatBubble, addEncoded, saveMessages, loadMessages,
-// exportChat, clearAll, scroll behavior и т.н.
-// НЕ ги пипаме — те вече са в твоя файл и ще си работят.
+function addChatBubble(text, sender) {
+    const chat = document.getElementById("chatMessages");
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble " + sender;
+    bubble.textContent = text;
+    chat.appendChild(bubble);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addEncoded(text, incoming) {
+    const encodedBox = document.getElementById("encodedMessages");
+    const bubble = document.createElement("div");
+    bubble.className = "encoded-bubble " + (incoming ? "incoming" : "outgoing");
+    bubble.textContent = text;
+    encodedBox.appendChild(bubble);
+    encodedBox.scrollTop = encodedBox.scrollHeight;
+}
+
+// ================== LOCAL STORAGE ==================
+
+function saveMessages() {
+    localStorage.setItem("chatMessages", document.getElementById("chatMessages").innerHTML);
+    localStorage.setItem("encodedMessages", document.getElementById("encodedMessages").innerHTML);
+}
+
+function loadMessages() {
+    document.getElementById("chatMessages").innerHTML = localStorage.getItem("chatMessages") || "";
+    document.getElementById("encodedMessages").innerHTML = localStorage.getItem("encodedMessages") || "";
+}
+
+window.onload = loadMessages;
