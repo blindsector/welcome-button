@@ -18,8 +18,13 @@ sendBtn.onclick = sendMessage;
 async function encodeText(text) {
     const res = await fetch(API_BASE + "/encode", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text, dictionary: DICTIONARY })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            dictionary: DICTIONARY
+        })
     });
 
     const data = await res.json();
@@ -29,8 +34,13 @@ async function encodeText(text) {
 async function decodeText(text) {
     const res = await fetch(API_BASE + "/decode", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text, dictionary: DICTIONARY })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            dictionary: DICTIONARY
+        })
     });
 
     const data = await res.json();
