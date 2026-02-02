@@ -182,6 +182,7 @@ function loadMessages() {
 
 
 
+
 window.addEventListener("load", loadMessages);
 
 /* ================= CLEAR ================= */
@@ -212,5 +213,16 @@ function exportChat() {
     a.download = "shadow_chat.txt";
     a.click();
 }
+document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("copy-btn")) {
+        const bubble = e.target.closest(".message-bubble");
+        if (!bubble) return;
+
+        const textDiv = bubble.querySelector(".message-text");
+        if (!textDiv) return;
+
+        copyWithFeedback(e.target, textDiv.textContent);
+    }
+});
 
 window.exportChat = exportChat;
