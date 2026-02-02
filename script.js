@@ -1,5 +1,6 @@
 const API_BASE = "https://penguin-nlp-server.onrender.com";
 
+
 // DOM
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
