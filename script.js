@@ -6,11 +6,15 @@ async function encodeText(text) {
     const res = await fetch(API_BASE + "/encode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text })
+        body: JSON.stringify({ 
+            text: text,
+            dictionary: DICTIONARY
+        })
     });
     const data = await res.json();
     return data.result;
 }
+
 
 async function decodeText(text) {
     const res = await fetch(API_BASE + "/decode", {
