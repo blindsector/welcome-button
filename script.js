@@ -1,4 +1,4 @@
-const API_BASE = "https://penguin-nlp.onrender.com"; // временен онлайн мозък
+const API_BASE = "https://penguin-nlp-server.onrender.com"; // временен онлайн мозък
 
 // ================== API ВРЪЗКА ==================
 
