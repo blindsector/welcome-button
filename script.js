@@ -169,13 +169,23 @@ function saveMessages() {
 }
 
 function loadMessages() {
-    chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
-    encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
+    const savedChat = localStorage.getItem("shadowChat_messages");
+    const savedEncoded = localStorage.getItem("shadowChat_encoded");
+
+    if (savedChat) chatMessages.innerHTML = savedChat;
+    if (savedEncoded) encodedMessages.innerHTML = savedEncoded;
+
+    // Възстановяване на Copy бутоните след reload
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+        const text = btn.parentElement.querySelector("div:nth-child(2)").textContent;
+        btn.onclick = () => copyWithFeedback(btn, text);
+    });
 
     requestAnimationFrame(() => {
         requestAnimationFrame(scrollToBottomSmooth);
     });
 }
+
 
 window.addEventListener("load", loadMessages);
 
