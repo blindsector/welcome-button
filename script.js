@@ -109,6 +109,18 @@ function copyWithFeedback(button, text) {
     }, 900);
 }
 
+// 🔥 НОВО: връзваме copy бутоните след load
+function rebindCopyButtons() {
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.onclick = () => {
+            const textDiv = btn.previousElementSibling; // съобщението е точно преди бутона
+            if (textDiv) {
+                copyWithFeedback(btn, textDiv.textContent);
+            }
+        };
+    });
+}
+
 /* ================= CHAT BUBBLES ================= */
 
 function addChatBubble(text, sender) {
@@ -169,19 +181,15 @@ function saveMessages() {
 }
 
 function loadMessages() {
-    const savedChat = localStorage.getItem("shadowChat_messages");
-    const savedEncoded = localStorage.getItem("shadowChat_encoded");
+    chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
+    encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
 
-    if (savedChat) chatMessages.innerHTML = savedChat;
-    if (savedEncoded) encodedMessages.innerHTML = savedEncoded;
+    rebindCopyButtons(); // 🔥 ето това оправя Copy след refresh
 
     requestAnimationFrame(() => {
         requestAnimationFrame(scrollToBottomSmooth);
     });
 }
-
-
-
 
 window.addEventListener("load", loadMessages);
 
@@ -213,16 +221,5 @@ function exportChat() {
     a.download = "shadow_chat.txt";
     a.click();
 }
-document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("copy-btn")) {
-        const bubble = e.target.closest(".message-bubble");
-        if (!bubble) return;
-
-        const textDiv = bubble.querySelector(".message-text");
-        if (!textDiv) return;
-
-        copyWithFeedback(e.target, textDiv.textContent);
-    }
-});
 
 window.exportChat = exportChat;
