@@ -3694,7 +3694,26 @@ const nounDict = {
 "кейовете": "поставките",
 
 
+};
 
+
+/* =======================
+   АВТОМАТИЧНО ОБРЪЩАНЕ
+   (за да работи в двете посоки)
+   ======================= */
+
+function makeBidirectional(dict) {
+    const result = {};
+    for (let key in dict) {
+        result[key] = dict[key];
+        result[dict[key]] = key;
+    }
+    return result;
+}
+
+const ADJ = makeBidirectional(adjDict);
+const NOUN = makeBidirectional(nounDict);
+const VERB = makeBidirectional(verbDict);
   
 
 
