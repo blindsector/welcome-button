@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пингвински речник</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  background: #0f0f14;
+  color: #e6f2ff;
+  display: flex;
+  justify-content: center;
+  padding: 40px 15px;
+}
+
+.container {
+  max-width: 720px;
+  width: 100%;
+  background: #15151d;
+  border-radius: 14px;
+  padding: 28px 32px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.6;
+  margin-bottom: 30px;
+}
+
+.entry {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
+}
+
+.word {
+  color: #8fd3ff;
+}
+
+.meaning {
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+.footer-note {
+  margin-top: 30px;
+  font-size: 12px;
+  opacity: 0.35;
+  text-align: center;
+  line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>ОПЕРАЦИЯ ПИНГВИН</h1>
+  <div class="subtitle">Лексикален фрагмент с неясно предназначение и правила на играта</div>
+
+  <div id="dictionary"></div>
+
+  <div class="footer-note">
+    Някои думи значат повече, отколкото изглежда.<br>
+    Други значат по-малко. Рядко това е случайно.
+    За да става смешен пингвински език е хубаво да се избират смешни пингвински думи за контекста.
+    Първите думи са нормалните думи (левите).
+    Вторите думи са пингвинските (десните).
+    При връщането на отговор в пингвински заместената дума трчбва да е удебелена.
+    Винаги отговора на пингвински трябва да е с дума точно изписана (без зна4ение граматическата правилност), както е в речника (десните думи).
+    Винаги важния отговор трябва да е с пингвински думи одебелени и в отделно изречение на нов ред.
+    Не се допуска одебеляване на дума ако тя не е на пингвински, освен ако не е в кавички. Ако е в кавички ще се счита за нормална.
+    Вдигането на пингвинска пушилка става с използването на десните думи в нормален граматически вид но без да се одебеляват.
+  </div>
+</div>
+
+<script>
+/*
+  👉 ТУК СЛАГАШ ВСИЧКИ ДУМИ ОТ ТВОЯ dictionary.js
+  Форматът е: "истинска дума": "кодова дума"
+*/
+
+const dictionary = {
+  "ти": "келеш",
+  "той": "балона",
+  "тя": "кифлата",
+  "ние": "гъзарите",
+  "вие": "темерутите",
+  "те": "пуйките"
+
+  // ⬆️ ДОБАВЯШ ОСТАНАЛИТЕ ДУМИ ПОД ТЯХ, СЪС ЗАПЕТАЙКА СЛЕД ВСЯКА
+};
+
+
+/* Показваме думите на екрана */
+const container = document.getElementById("dictionary");
+
+Object.entries(dictionary).forEach(([real, coded]) => {
+  const row = document.createElement("div");
+  row.className = "entry";
+  row.innerHTML = `<span class="word">${coded}</span> — <span class="meaning">${real}</span>`;
+  container.appendChild(row);
+});
+</script>
+
+</body>
+</html>
