@@ -64,7 +64,7 @@ function decodeIncoming() {
 
     const decoded = transformText(code);
 
-    addChatBubble(decoded, "her");
+    addChatBubble(decoded, " him");
     addEncoded(code, true);
 
     saveMessages();
@@ -92,7 +92,7 @@ function addChatBubble(text, sender) {
 
     const label = document.createElement("div");
     label.className = "sender";
-    label.textContent = sender === "me" ? "Аз" : "Тя";
+    label.textContent = sender === "me" ? "Аз" : "it";
 
     const msg = document.createElement("div");
     msg.textContent = text;
@@ -117,7 +117,7 @@ function addEncoded(text, fromHer = false) {
 
     const label = document.createElement("div");
     label.className = "sender";
-    label.textContent = fromHer ? "Тя – получен код" : "Аз – изпратен код";
+    label.textContent = fromHer ? "it – получен код" : "Аз – изпратен код";
 
     const msg = document.createElement("div");
     msg.textContent = text;
