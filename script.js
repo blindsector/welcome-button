@@ -92,7 +92,7 @@ function addChatBubble(text, sender) {
 
     const label = document.createElement("div");
     label.className = "sender";
-    label.textContent = sender === "me" ? "Аз" : "it";
+    label.textContent = sender === "me" ? "Аз" : "Ти";
 
     const msg = document.createElement("div");
     msg.textContent = text;
@@ -117,7 +117,7 @@ function addEncoded(text, fromHer = false) {
 
     const label = document.createElement("div");
     label.className = "sender";
-    label.textContent = fromHer ? "it – получен код" : "Аз – изпратен код";
+    label.textContent = fromHer ? "Ти – получен код" : "Аз – изпратен код";
 
     const msg = document.createElement("div");
     msg.textContent = text;
