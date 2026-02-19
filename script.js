@@ -26,9 +26,9 @@ function preserveCase(original, replacement) {
 function transformWord(word) {
     const lower = word.toLowerCase();
 
-    if (ADJ[lower]) return preserveCase(word, ADJ[lower]);
-    if (NOUN[lower]) return preserveCase(word, NOUN[lower]);
-    if (VERB[lower]) return preserveCase(word, VERB[lower]);
+    if (ADJ && ADJ[lower]) return preserveCase(word, ADJ[lower]);
+    if (NOUN && NOUN[lower]) return preserveCase(word, NOUN[lower]);
+    if (VERB && VERB[lower]) return preserveCase(word, VERB[lower]);
 
     return word;
 }
@@ -64,7 +64,7 @@ function decodeIncoming() {
 
     const decoded = transformText(code);
 
-    addChatBubble(decoded, " him");
+    addChatBubble(decoded, "him");
     addEncoded(code, true);
 
     saveMessages();
@@ -83,6 +83,19 @@ function copyWithFeedback(button, text) {
         button.textContent = original;
         button.classList.remove("copied");
     }, 900);
+}
+
+/* ---------------- ПРЕКАЧВАНЕ НА COPY СЛЕД REFRESH ---------------- */
+function reattachCopyEvents() {
+    const allCopyButtons = document.querySelectorAll(".copy-btn");
+
+    allCopyButtons.forEach(btn => {
+        const bubble = btn.parentElement;
+        const msgDiv = bubble.querySelector("div:nth-child(2)");
+        const text = msgDiv.textContent;
+
+        btn.onclick = () => copyWithFeedback(btn, text);
+    });
 }
 
 /* ---------------- ЧАТ БАЛОН ---------------- */
@@ -144,6 +157,8 @@ function saveMessages() {
 function loadMessages() {
     chatMessages.innerHTML = localStorage.getItem("shadowChat_messages") || "";
     encodedMessages.innerHTML = localStorage.getItem("shadowChat_encoded") || "";
+
+    reattachCopyEvents();
 
     requestAnimationFrame(() => {
         requestAnimationFrame(scrollToBottomSmooth);
